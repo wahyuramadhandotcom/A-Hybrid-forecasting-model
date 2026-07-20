@@ -4,12 +4,6 @@ def rmspe(y_true, y_pred):
     y_true = np.where(y_true == 0, 1e-6, y_true)
     return np.sqrt(np.mean(((y_true - y_pred) / y_true) ** 2))
 
-
-def rmspe_sklearn(y_true, y_pred):
-    # versi SKLearn (GridSearch membutuhkan bentuk ini)
-    return rmspe(y_true, y_pred)
-
-
 def rmspe_xgb_eval(preds, dtrain):
     y = dtrain.get_label()
     y_safe = np.where(y == 0, 1e-6, y)
