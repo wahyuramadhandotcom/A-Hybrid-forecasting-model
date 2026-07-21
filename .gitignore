@@ -40,7 +40,7 @@ data/processed/
 *.parquet
 *.h5
 *.hdf5
-*.pkl
+# *.pkl
 *.pickle
 *.npy
 *.npz
