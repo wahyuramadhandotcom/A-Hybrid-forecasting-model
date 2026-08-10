@@ -105,6 +105,26 @@ For Rossmann, experiments include log-transformed targets and inverse transforma
 | Rossmann original scale | `LR-XGBoost (Residual)` | `RMSE=577.63`, `MSE=333,659.51`, `RMSPE=0.06840`, `R^2=0.9651`, `MAE=376.12` |
 | Rossmann log-transformed table | `LR-XGBoost (Residual)` | `RMSE=0.07022`, `MSE=0.00493`, `R^2=0.97238`, `MAE=0.05373` |
 
+### Summary Visualizations
+
+The following figures summarize the final comparison tables. Image files are expected under `assets/summary/`.
+
+#### PharmaSales Daily RMSE
+
+![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
+
+#### PharmaSales Weekly MSE
+
+![PharmaSales Weekly MSE](assets/summary/pharma_weekly_mse.png)
+
+#### Rossmann Original Scale RMSE
+
+![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
+
+#### Rossmann Log-Transformed / Scaled RMSE
+
+![Rossmann Log-Transformed / Scaled RMSE](assets/summary/rossmann_scaled_rmse.png)
+
 ### Table 1. Daily Forecasting Performance (RMSE) Across ATC Categories on PharmaSales Dataset
 
 | Method / Architecture | M01AB | M01AE | N02BA | N02BE | N05B | N05C | R03 | R06 |
