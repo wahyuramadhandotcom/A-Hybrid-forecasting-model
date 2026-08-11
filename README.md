@@ -125,6 +125,28 @@ The following figures summarize the final comparison tables. Image files are exp
 
 ![Rossmann Log-Transformed / Scaled RMSE](assets/summary/rossmann_scaled_rmse.png)
 
+### Residual Analysis
+
+Residual distribution plots are included for the proposed `LR-XGBoost (Residual)` rows reported in the result tables. These plots compare Linear Regression residuals with residuals after LR-XGBoost correction.
+
+#### PharmaSales Daily Proposed Residual Correction
+
+![PharmaSales Daily Proposed Residual Distribution](assets/summary/pharma_daily_proposed_residual_distribution.png)
+
+The daily residual distribution is used to check whether the proposed model reduces the remaining error after Linear Regression. A better residual correction is indicated when the LR-XGBoost residual curve is more concentrated around zero and has a narrower spread than the Linear Regression residual curve.
+
+#### PharmaSales Weekly Proposed Residual Correction
+
+![PharmaSales Weekly Proposed Residual Distribution](assets/summary/pharma_weekly_proposed_residual_distribution.png)
+
+The weekly residual distribution summarizes how well the proposed model handles aggregated weekly demand patterns. A tighter LR-XGBoost residual distribution around zero suggests that residual correction improves weekly forecast stability compared with Linear Regression alone.
+
+#### Rossmann Proposed Residual Correction
+
+![Rossmann Proposed Residual Distribution](assets/summary/rossmann_proposed_residual_distribution.png)
+
+The Rossmann residual distribution evaluates residual correction on retail sales data. When the LR-XGBoost residuals are closer to zero with fewer large deviations, the hybrid model better captures nonlinear sales effects that remain after the linear component.
+
 ### Table 1. Daily Forecasting Performance (RMSE) Across ATC Categories on PharmaSales Dataset
 
 | Method / Architecture | M01AB | M01AE | N02BA | N02BE | N05B | N05C | R03 | R06 |
