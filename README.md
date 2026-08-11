@@ -120,7 +120,19 @@ Rossmann follows the same residual correction principle, but uses Rossmann-speci
 
 ![Rossmann Experiment Architecture](assets/architecture/rossmann_experiment_architecture.png)
 
-Rossmann architecture diagram will be added after the final experiment diagram is prepared.
+Pipeline summary:
+
+1. Load Rossmann `train.csv` and merge store-level metadata from `store.csv`.
+2. Sort observations by `Date` and use an 80:20 chronological train-test split.
+3. Create retail promotion features, including `IsPromo2Active` and `Promo2DurationWeeks`.
+4. One-hot encode categorical store and holiday features.
+5. Remove unused or redundant columns and prepare the final feature matrix.
+6. Apply `log1p` transformation to `Sales` for the main proposed experiment.
+7. Train Linear Regression as the first-stage model on transformed sales.
+8. Compute residuals as `actual_log_sales - linear_prediction`.
+9. Tune XGBoost with Grid Search and TimeSeriesSplit, then train XGBoost on the residuals.
+10. Produce final log-scale forecasts using `linear_prediction + xgboost_residual_prediction`.
+11. Convert predictions back to original sales scale using `expm1` and evaluate using RMSE, MSE, RMSPE, `R^2`, and MAE.
 
 ## Results
 
