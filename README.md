@@ -147,23 +147,31 @@ Pipeline summary:
 
 ### Summary Visualizations
 
-The following figures summarize the final comparison tables. Image files are expected under `assets/summary/`.
+The following figures summarize the final comparison tables.
 
 #### PharmaSales Daily RMSE
 
 ![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
 
+This visualization compares daily RMSE across ATC categories. Lower bars indicate better forecasting performance, and the proposed method is highlighted to show where residual correction is competitive against statistical and machine learning baselines.
+
 #### PharmaSales Weekly MSE
 
 ![PharmaSales Weekly MSE](assets/summary/pharma_weekly_mse.png)
+
+This visualization compares weekly MSE across ATC categories on a log scale. The log scale is used because baseline errors vary widely across categories, making it easier to compare the proposed method against larger-error baselines.
 
 #### Rossmann Original Scale RMSE
 
 ![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
 
+This visualization compares Rossmann models after predictions are evaluated on the original sales scale. Lower RMSE indicates better real-scale forecasting accuracy, and the proposed residual model shows the strongest original-scale performance among the listed methods.
+
 #### Rossmann Log-Transformed / Scaled RMSE
 
 ![Rossmann Log-Transformed / Scaled RMSE](assets/summary/rossmann_scaled_rmse.png)
+
+This visualization compares RMSE for models evaluated on log-transformed or scaled targets. It shows how the proposed method performs under the transformed target setting used during training, complementing the original-scale comparison.
 
 ### Residual Analysis
 
@@ -277,4 +285,4 @@ src/        Shared utilities and model helpers
 
 ## Acknowledgments
 
-This project uses PharmaSales and Rossmann Store Sales datasets and compares against reproduced baselines from related forecasting literature. Citation details will be added after the manuscript is finalized.
+This project uses PharmaSales and Rossmann Store Sales datasets and compares against reproduced baselines from related forecasting literature.

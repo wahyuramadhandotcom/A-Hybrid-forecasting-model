@@ -72,3 +72,5 @@ htmlcov/
 # --- Type checking / linting cache ---
 .mypy_cache/
 .ruff_cache/
+
+*.log
