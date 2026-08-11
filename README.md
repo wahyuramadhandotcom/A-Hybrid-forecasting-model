@@ -94,6 +94,34 @@ Expected raw data paths:
 
 For Rossmann, experiments include log-transformed targets and inverse transformation back to original sales scale.
 
+### Experiment Architecture
+
+#### PharmaSales Daily and Weekly
+
+The PharmaSales daily and weekly experiments use the same architecture, with different time aggregation levels.
+
+![PharmaSales Experiment Architecture](assets/architecture/pharmasales_experiment_architecture.png)
+
+Pipeline summary:
+
+1. Load the PharmaSales daily or weekly dataset.
+2. Select ATC sales categories: `M01AB`, `M01AE`, `N02BA`, `N02BE`, `N05B`, `N05C`, `R03`, `R06`.
+3. Apply preprocessing and time-series feature engineering.
+4. Train Linear Regression as the first-stage model.
+5. Compute residuals as `actual - linear_prediction`.
+6. Tune XGBoost hyperparameters using Grid Search, Optuna, PSO, and GEO.
+7. Train XGBoost on Linear Regression residuals.
+8. Produce the final forecast using `linear_prediction + xgboost_residual_prediction`.
+9. Evaluate using RMSE or MSE and residual distribution analysis.
+
+#### Rossmann
+
+Rossmann follows the same residual correction principle, but uses Rossmann-specific retail features and log-transformed sales.
+
+![Rossmann Experiment Architecture](assets/architecture/rossmann_experiment_architecture.png)
+
+Rossmann architecture diagram will be added after the final experiment diagram is prepared.
+
 ## Results
 
 ### Key Findings
