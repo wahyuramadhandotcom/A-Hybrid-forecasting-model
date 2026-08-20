@@ -153,25 +153,25 @@ The following figures summarize the final comparison tables.
 
 ![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
 
-This visualization compares daily RMSE across ATC categories. Lower bars indicate better forecasting performance, and the proposed method is highlighted to show where residual correction is competitive against statistical and machine learning baselines.
+This visualization compares the top 5 lowest daily RMSE methods for each ATC category. Lower bars indicate better forecasting performance, and the proposed method is highlighted to show where residual correction is competitive against statistical and machine learning baselines.
 
 #### PharmaSales Weekly MSE
 
 ![PharmaSales Weekly MSE](assets/summary/pharma_weekly_mse.png)
 
-This visualization compares weekly MSE across ATC categories on a log scale. The log scale is used because baseline errors vary widely across categories, making it easier to compare the proposed method against larger-error baselines.
+This visualization compares the top 5 lowest weekly MSE methods for each ATC category on a log scale. The log scale is used because baseline errors vary widely across categories, making it easier to compare the proposed method against larger-error baselines.
 
 #### Rossmann Original Scale RMSE
 
 ![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
 
-This visualization compares Rossmann models after predictions are evaluated on the original sales scale. Lower RMSE indicates better real-scale forecasting accuracy, and the proposed residual model shows the strongest original-scale performance among the listed methods.
+This visualization compares the top 10 Rossmann models from Table 3 after predictions are evaluated on the original sales scale. Lower RMSE indicates better real-scale forecasting accuracy, and the proposed residual model shows the strongest original-scale performance among the listed methods.
 
-#### Rossmann Log-Transformed / Scaled RMSE
+#### Rossmann Log-Transformed RMSE
 
-![Rossmann Log-Transformed / Scaled RMSE](assets/summary/rossmann_scaled_rmse.png)
+![Rossmann Log-Transformed RMSE](assets/summary/rossmann_scaled_rmse.png)
 
-This visualization compares RMSE for models evaluated on log-transformed or scaled targets. It shows how the proposed method performs under the transformed target setting used during training, complementing the original-scale comparison.
+This visualization compares all Rossmann log-transformed RMSE rows from Table 4. It shows how the proposed method performs under the transformed target setting used during training, alongside the log-transformed baseline adaptations.
 
 ### Residual Analysis
 
@@ -207,7 +207,7 @@ The Rossmann residual distribution evaluates residual correction on retail sales
 | RBF_NN (Rathipriya et al.) | 2.93 | 2.30 | 2.24 | 14.51 | 4.46 | 1.15 | 8.43 | 2.58 |
 | LR+XGB (Ramadhan et al.) | 2.81 | 2.16 | 2.07 | 12.61 | 4.25 | 1.12 | 8.11 | 2.23 |
 | **Proposed Method** |  |  |  |  |  |  |  |  |
-| LR-XGBoost (Residual) | 2.81 | 2.13 | 2.24 | 12.63 | 4.22 | 1.11 | 7.98 | 2.25 |
+| LR-XGBoost (Residual) | 2.81 | 2.22 | 2.19 | 13.84 | 4.26 | 1.11 | 8.51 | 2.40 |
 
 ### Table 2. Weekly Forecasting Performance (MSE) Across ATC Categories on PharmaSales Dataset
 
@@ -226,7 +226,7 @@ The Rossmann residual distribution evaluates residual correction on retail sales
 | XGBoost (Fourkiotis et al. [10]) | 68.22 | 75.45 | 66.88 | 2470.51 | 178.77 | 7.44 | 993.66 | 83.97 |
 | Stacked LSTM (Zdravkovic et al. [7]) | 76.29 | 93.25 | 38.54 | 4145.11 | 158.71 | 7.77 | 866.70 | 94.91 |
 | **Proposed Method** |  |  |  |  |  |  |  |  |
-| LR-XGBoost (Residual) | 0.5735 | 0.3079 | 0.2032 | 10.9702 | 0.0144 | 0.0000 | 11.0293 | 0.0945 |
+| LR-XGBoost (Residual) | 65.2072 | 71.1793 | 67.7600 | 2472.6989 | 175.9400 | 8.1876 | 857.4368 | 70.8699 |
 
 Note: Table 2 values use saved notebook outputs from the Our Preprocessing sections in `notebooks/fourkiotis_pharma_weekly.ipynb`, `notebooks/zdravkovic_pharma_weekly.ipynb`, and `notebooks/our_study_pharma_weekly.ipynb`.
 
@@ -250,22 +250,22 @@ Note: Table 2 values use saved notebook outputs from the Our Preprocessing secti
 | XGBoost (Baseline) | Zhao et al. [58] | Original / Inverse | 1,142.49 | 1,305,294.62 | 0.15995 | 0.8633 | 797.19 |
 | XGBoost (Tuned v1) | Zhao et al. [58] | Original / Inverse | 913.09 | 833,736.38 | 0.14691 | 0.9030 | 621.59 |
 | **Proposed Method** |  |  |  |  |  |  |  |
-| LR-XGBoost (Residual) | Our Study | Log-transformed | 577.63 | 333,659.51 | 0.06840 | 0.9651 | 376.12 |
+| LR-XGBoost (Residual) | Our Study | Original / Inverse | 577.63 | 333,659.51 | 0.06840 | 0.9651 | 376.12 |
 
 Note: Diamantini, Zeng, and Zhao rows use rerun notebook outputs after adding full metric exports. Qureshi rows use `Our Preprocessing` results from `notebooks/qureshi_rossmann_daily.ipynb`. Zhao et al. report a final validation error / `eval-rmse` around `0.07285`, but it is not listed as a Table 3 row because the table uses original-scale regression metrics plus RMSPE from reproduced predictions.
 
-### Table 4. Predictive Performance Comparison on Rossmann Store Sales Dataset (Log-Transformed / Scaled Data)
+### Table 4. Predictive Performance Comparison on Rossmann Store Sales Dataset (Log-Transformed Target)
 
-| Method / Architecture | Reference | Target Scale | RMSE | MSE | R^2 | MAE |
+| Method / Architecture | Reference | Target Transform | RMSE | MSE | R^2 | MAE |
 |---|---|---|---:|---:|---:|---:|
-| **Statistical & ML Baselines** |  |  |  |  |  |  |
-| XGBoost | Malik et al. [59] | Scaled | 0.0666 | 0.0044 | 0.8966 | 0.0360 |
-| FB Prophet | Malik et al. [59] | Scaled | 0.1375 | 0.0189 | 0.5596 | 0.1019 |
-| ARIMA | Malik et al. [59] | Scaled | 0.2115 | 0.0447 | -0.0411 | 0.1667 |
+| **Log-Transformed Adaptation** |  |  |  |  |  |  |
+| XGBoost | Malik et al. adaptation | `log1p(Sales)` | 0.4437 | 0.1969 | 0.8847 | 0.1834 |
+| FB Prophet | Malik et al. adaptation | `log1p(Sales)` | 0.5874 | 0.3451 | 0.7979 | 0.3340 |
+| ARIMA | Malik et al. adaptation | `log1p(Sales)` | 1.3094 | 1.7146 | -0.0045 | 1.0269 |
 | **Proposed Method** |  |  |  |  |  |  |
-| LR-XGBoost (Residual) | Our Study | Log-transformed | 0.07022 | 0.00493 | 0.97238 | 0.05373 |
+| LR-XGBoost (Residual) | Our Study | `log1p(Sales)` | 0.07022 | 0.00493 | 0.97238 | 0.05373 |
 
-Note: Malik rows use `malik_table4_our` from `notebooks/malik_rossmann_daily.ipynb`. Proposed method values use the `v1.5` transformed-sales test-load output from `notebooks/our_study_rosman.ipynb`.
+Note: The three baseline rows are log-transformed adaptations implemented in `notebooks/malik_rossmann_daily.ipynb`; the paper does not specify MinMaxScaler or log transformation explicitly. Proposed method values use the `v1.5` transformed-sales test-load output from `notebooks/our_study_rosman.ipynb`.
 
 ## Repository Structure
 
