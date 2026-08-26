@@ -241,7 +241,7 @@ The Rossmann residual distribution evaluates residual correction on retail sales
 | **Proposed Method** |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | Our Study | `log1p(Sales)` | 0.07022 | 0.00493 | 0.97238 | 0.05373 |
 
-Note: The three baseline rows are log-transformed adaptations implemented in `notebooks/malik_rossmann_daily.ipynb`; the paper does not specify MinMaxScaler or log transformation explicitly. Proposed method values use the `v1.5` transformed-sales test-load output from `notebooks/our_study_rosman.ipynb`.
+Note: The numerical results presented in this table were reproduced using the scaled/log-transformed version of the Rossmann Store Sales dataset. The resulting metrics were generated without applying an inverse-transformation, providing a consistent evaluation of the model's performance on scaled data as per the referenced methodology. The three baseline rows are log-transformed adaptations implemented in `notebooks/malik_rossmann_daily.ipynb`; the paper does not specify MinMaxScaler or log transformation explicitly. Proposed method values use the `v1.5` transformed-sales test-load output from `notebooks/our_study_rosman.ipynb`.
 
 ![Rossmann Log-Transformed RMSE](assets/summary/rossmann_scaled_rmse.png)
 
