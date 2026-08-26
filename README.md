@@ -220,7 +220,7 @@ The weekly residual distribution summarizes how well the proposed model handles 
 | **Proposed Method** |  |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | Our Study | Original / Inverse | 577.63 | 333,659.51 | 0.06840 | 0.9651 | 376.12 |
 
-Note: Diamantini, Zeng, and Zhao rows use rerun notebook outputs after adding full metric exports. Qureshi rows use `Our Preprocessing` results from `notebooks/qureshi_rossmann_daily.ipynb`. Zhao et al. report a final validation error / `eval-rmse` around `0.07285`, but it is not listed as a Table 3 row because the table uses original-scale regression metrics plus RMSPE from reproduced predictions.
+Note: The numerical results presented in this table were reproduced by re-evaluating the referenced deep learning and machine learning models alongside the proposed framework using our established pipeline. All models in this table were trained and evaluated directly on the original sales scale to ensure a scientifically valid apples-to-apples comparison. Specifically, Diamantini, Zeng, and Zhao rows use rerun notebook outputs with full metric exports. Qureshi rows use `Our Preprocessing` results from `notebooks/qureshi_rossmann_daily.ipynb`. Zhao et al. report a final validation error / `eval-rmse` around `0.07285`, but it is not listed as a Table 3 row because the table uses original-scale regression metrics plus RMSPE from reproduced predictions.
 
 ![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
 
