@@ -132,7 +132,7 @@ Pipeline summary:
 8. Compute residuals as `actual_log_sales - linear_prediction`.
 9. Tune XGBoost with Grid Search and TimeSeriesSplit, then train XGBoost on the residuals.
 10. Produce final log-scale forecasts using `linear_prediction + xgboost_residual_prediction`.
-11. Evaluate the predictions using two parallel paths to support comprehensive benchmarking: (A) Convert predictions back to the original sales scale using `expm1` for primary evaluation (RMSE, MSE, RMSPE, `R^2`, MAE), and (B) Evaluate directly on the log-transformed scale without inverse transformation for specific baseline comparisons.
+11. Evaluate the predictions using two parallel paths to support comprehensive benchmarking: (A) Convert predictions back to the original sales scale using `expm1` for primary evaluation (RMSE, MSE, RMSPE, `R^2`, MAE) results reported in Table 3, and (B) Evaluate directly on the log-transformed scale without inverse transformation for specific baseline comparisons (results reported in Table 4).
 
 ## Results
 
