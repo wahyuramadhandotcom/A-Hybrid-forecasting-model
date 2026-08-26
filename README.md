@@ -92,7 +92,7 @@ Expected raw data paths:
 3. XGBoost learns the residual pattern.
 4. Final prediction is `linear_prediction + xgboost_residual_prediction`.
 
-For Rossmann, experiments include log-transformed targets and inverse transformation back to original sales scale.
+For the Rossmann dataset, the evaluation framework features two distinct paths to ensure comprehensive benchmarking: the primary path applies an inverse transformation to evaluate errors on the original sales scale (for real-world metrics), and a secondary path retains the log-transformed scale (for direct comparison with specific scaled literature baselines).
 
 ### Experiment Architecture
 
@@ -132,7 +132,7 @@ Pipeline summary:
 8. Compute residuals as `actual_log_sales - linear_prediction`.
 9. Tune XGBoost with Grid Search and TimeSeriesSplit, then train XGBoost on the residuals.
 10. Produce final log-scale forecasts using `linear_prediction + xgboost_residual_prediction`.
-11. Convert predictions back to original sales scale using `expm1` and evaluate using RMSE, MSE, RMSPE, `R^2`, and MAE.
+11. Evaluate the predictions using two parallel paths to support comprehensive benchmarking: (A) Convert predictions back to the original sales scale using `expm1` for primary evaluation (RMSE, MSE, RMSPE, `R^2`, MAE), and (B) Evaluate directly on the log-transformed scale without inverse transformation for specific baseline comparisons.
 
 ## Results
 
@@ -161,6 +161,8 @@ The summary and residual visualizations are placed directly under each result ta
 | **Proposed Method** |  |  |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | 2.81 | 2.22 | 2.19 | 13.84 | 4.26 | 1.11 | 8.51 | 2.40 |
 
+Note: he numerical results presented in this table were reproduced by re-evaluating the referenced models and the proposed two-stage hybrid Linear Regression–XGBoost framework using our established experimental pipeline. The evaluation utilized time-series cross-validation to prevent data leakage and ensure realistic out-of-sample testing on a daily granularity.
+
 ![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
 
 This visualization compares the top 5 lowest daily RMSE methods for each ATC category. Lower bars indicate better forecasting performance, and the proposed method is highlighted to show where residual correction is competitive against statistical and machine learning baselines.
@@ -188,7 +190,7 @@ The daily residual distribution is used to check whether the proposed model redu
 | **Proposed Method** |  |  |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | 65.2072 | 71.1793 | 67.7600 | 2472.6989 | 175.9400 | 8.1876 | 857.4368 | 70.8699 |
 
-Note: Table 2 values use saved notebook outputs from the Our Preprocessing sections in `notebooks/fourkiotis_pharma_weekly.ipynb`, `notebooks/zdravkovic_pharma_weekly.ipynb`, and `notebooks/our_study_pharma_weekly.ipynb`.
+Note: The numerical results presented in this table were reproduced by re-evaluating the referenced models and the proposed framework on a weekly aggregation of the Pharma Sales dataset. The reported MSE metrics were generated utilizing the identical feature engineering methodology established in the manuscript to ensure fair cross-model benchmarking. Specifically, these values use saved notebook outputs from the Our Preprocessing sections in `notebooks/fourkiotis_pharma_weekly.ipynb`, `notebooks/zdravkovic_pharma_weekly.ipynb`, and `notebooks/our_study_pharma_weekly.ipynb`.
 
 ![PharmaSales Weekly MSE](assets/summary/pharma_weekly_mse.png)
 
@@ -220,7 +222,7 @@ The weekly residual distribution summarizes how well the proposed model handles 
 | **Proposed Method** |  |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | Our Study | Original / Inverse | 577.63 | 333,659.51 | 0.06840 | 0.9651 | 376.12 |
 
-Note: The numerical results presented in this table were reproduced by re-evaluating the referenced deep learning and machine learning models alongside the proposed framework using our established pipeline. All models in this table were trained and evaluated directly on the original sales scale to ensure a scientifically valid apples-to-apples comparison. Specifically, Diamantini, Zeng, and Zhao rows use rerun notebook outputs with full metric exports. Qureshi rows use `Our Preprocessing` results from `notebooks/qureshi_rossmann_daily.ipynb`. Zhao et al. report a final validation error / `eval-rmse` around `0.07285`, but it is not listed as a Table 3 row because the table uses original-scale regression metrics plus RMSPE from reproduced predictions.
+Note: The numerical results presented in this table were reproduced by re-evaluating the referenced deep learning and machine learning models alongside the proposed framework using our established pipeline. Models trained on log-transformed targets were explicitly inverse-transformed to the original sales scale prior to metric evaluation to ensure a scientifically valid apples-to-apples comparison. Specifically, Diamantini, Zeng, and Zhao rows use rerun notebook outputs with full metric exports. Qureshi rows use `Our Preprocessing` results from `notebooks/qureshi_rossmann_daily.ipynb`. Zhao et al. report a final validation error / `eval-rmse` around `0.07285`, but it is not listed as a Table 3 row because the table uses original-scale regression metrics plus RMSPE from reproduced predictions.
 
 ![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
 
