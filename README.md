@@ -145,55 +145,7 @@ Pipeline summary:
 | Rossmann original scale | `LR-XGBoost (Residual)` | `RMSE=577.63`, `MSE=333,659.51`, `RMSPE=0.06840`, `R^2=0.9651`, `MAE=376.12` |
 | Rossmann log-transformed table | `LR-XGBoost (Residual)` | `RMSE=0.07022`, `MSE=0.00493`, `R^2=0.97238`, `MAE=0.05373` |
 
-### Summary Visualizations
-
-The following figures summarize the final comparison tables.
-
-#### PharmaSales Daily RMSE
-
-![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
-
-This visualization compares the top 5 lowest daily RMSE methods for each ATC category. Lower bars indicate better forecasting performance, and the proposed method is highlighted to show where residual correction is competitive against statistical and machine learning baselines.
-
-#### PharmaSales Weekly MSE
-
-![PharmaSales Weekly MSE](assets/summary/pharma_weekly_mse.png)
-
-This visualization compares the top 5 lowest weekly MSE methods for each ATC category on a log scale. The log scale is used because baseline errors vary widely across categories, making it easier to compare the proposed method against larger-error baselines.
-
-#### Rossmann Original Scale RMSE
-
-![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
-
-This visualization compares the top 10 Rossmann models from Table 3 after predictions are evaluated on the original sales scale. Lower RMSE indicates better real-scale forecasting accuracy, and the proposed residual model shows the strongest original-scale performance among the listed methods.
-
-#### Rossmann Log-Transformed RMSE
-
-![Rossmann Log-Transformed RMSE](assets/summary/rossmann_scaled_rmse.png)
-
-This visualization compares all Rossmann log-transformed RMSE rows from Table 4. It shows how the proposed method performs under the transformed target setting used during training, alongside the log-transformed baseline adaptations.
-
-### Residual Analysis
-
-Residual distribution plots are included for the proposed `LR-XGBoost (Residual)` rows reported in the result tables. These plots compare Linear Regression residuals with residuals after LR-XGBoost correction.
-
-#### PharmaSales Daily Proposed Residual Correction
-
-![PharmaSales Daily Proposed Residual Distribution](assets/summary/pharma_daily_proposed_residual_distribution.png)
-
-The daily residual distribution is used to check whether the proposed model reduces the remaining error after Linear Regression. A better residual correction is indicated when the LR-XGBoost residual curve is more concentrated around zero and has a narrower spread than the Linear Regression residual curve.
-
-#### PharmaSales Weekly Proposed Residual Correction
-
-![PharmaSales Weekly Proposed Residual Distribution](assets/summary/pharma_weekly_proposed_residual_distribution.png)
-
-The weekly residual distribution summarizes how well the proposed model handles aggregated weekly demand patterns. A tighter LR-XGBoost residual distribution around zero suggests that residual correction improves weekly forecast stability compared with Linear Regression alone.
-
-#### Rossmann Proposed Residual Correction
-
-![Rossmann Proposed Residual Distribution](assets/summary/rossmann_proposed_residual_distribution.png)
-
-The Rossmann residual distribution evaluates residual correction on retail sales data. When the LR-XGBoost residuals are closer to zero with fewer large deviations, the hybrid model better captures nonlinear sales effects that remain after the linear component.
+The summary and residual visualizations are placed directly under each result table below.
 
 ### Table 1. Daily Forecasting Performance (RMSE) Across ATC Categories on PharmaSales Dataset
 
@@ -208,6 +160,14 @@ The Rossmann residual distribution evaluates residual correction on retail sales
 | LR+XGB (Ramadhan et al.) | 2.81 | 2.16 | 2.07 | 12.61 | 4.25 | 1.12 | 8.11 | 2.23 |
 | **Proposed Method** |  |  |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | 2.81 | 2.22 | 2.19 | 13.84 | 4.26 | 1.11 | 8.51 | 2.40 |
+
+![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
+
+This visualization compares the top 5 lowest daily RMSE methods for each ATC category. Lower bars indicate better forecasting performance, and the proposed method is highlighted to show where residual correction is competitive against statistical and machine learning baselines.
+
+![PharmaSales Daily Proposed Residual Distribution](assets/summary/pharma_daily_proposed_residual_distribution.png)
+
+The daily residual distribution is used to check whether the proposed model reduces the remaining error after Linear Regression. A better residual correction is indicated when the LR-XGBoost residual curve is more concentrated around zero and has a narrower spread than the Linear Regression residual curve.
 
 ### Table 2. Weekly Forecasting Performance (MSE) Across ATC Categories on PharmaSales Dataset
 
@@ -229,6 +189,14 @@ The Rossmann residual distribution evaluates residual correction on retail sales
 | LR-XGBoost (Residual) | 65.2072 | 71.1793 | 67.7600 | 2472.6989 | 175.9400 | 8.1876 | 857.4368 | 70.8699 |
 
 Note: Table 2 values use saved notebook outputs from the Our Preprocessing sections in `notebooks/fourkiotis_pharma_weekly.ipynb`, `notebooks/zdravkovic_pharma_weekly.ipynb`, and `notebooks/our_study_pharma_weekly.ipynb`.
+
+![PharmaSales Weekly MSE](assets/summary/pharma_weekly_mse.png)
+
+This visualization compares the top 5 lowest weekly MSE methods for each ATC category on a log scale. The log scale is used because baseline errors vary widely across categories, making it easier to compare the proposed method against larger-error baselines.
+
+![PharmaSales Weekly Proposed Residual Distribution](assets/summary/pharma_weekly_proposed_residual_distribution.png)
+
+The weekly residual distribution summarizes how well the proposed model handles aggregated weekly demand patterns. A tighter LR-XGBoost residual distribution around zero suggests that residual correction improves weekly forecast stability compared with Linear Regression alone.
 
 ### Table 3. Predictive Performance Comparison on Rossmann Store Sales Dataset (Original Scale)
 
@@ -254,6 +222,14 @@ Note: Table 2 values use saved notebook outputs from the Our Preprocessing secti
 
 Note: Diamantini, Zeng, and Zhao rows use rerun notebook outputs after adding full metric exports. Qureshi rows use `Our Preprocessing` results from `notebooks/qureshi_rossmann_daily.ipynb`. Zhao et al. report a final validation error / `eval-rmse` around `0.07285`, but it is not listed as a Table 3 row because the table uses original-scale regression metrics plus RMSPE from reproduced predictions.
 
+![Rossmann Original Scale RMSE](assets/summary/rossmann_original_rmse.png)
+
+This visualization compares the top 10 Rossmann models from Table 3 after predictions are evaluated on the original sales scale. Lower RMSE indicates better real-scale forecasting accuracy, and the proposed residual model shows the strongest original-scale performance among the listed methods.
+
+![Rossmann Proposed Residual Distribution](assets/summary/rossmann_proposed_residual_distribution.png)
+
+The Rossmann residual distribution evaluates residual correction on retail sales data. When the LR-XGBoost residuals are closer to zero with fewer large deviations, the hybrid model better captures nonlinear sales effects that remain after the linear component.
+
 ### Table 4. Predictive Performance Comparison on Rossmann Store Sales Dataset (Log-Transformed Target)
 
 | Method / Architecture | Reference | Target Transform | RMSE | MSE | R^2 | MAE |
@@ -266,6 +242,10 @@ Note: Diamantini, Zeng, and Zhao rows use rerun notebook outputs after adding fu
 | LR-XGBoost (Residual) | Our Study | `log1p(Sales)` | 0.07022 | 0.00493 | 0.97238 | 0.05373 |
 
 Note: The three baseline rows are log-transformed adaptations implemented in `notebooks/malik_rossmann_daily.ipynb`; the paper does not specify MinMaxScaler or log transformation explicitly. Proposed method values use the `v1.5` transformed-sales test-load output from `notebooks/our_study_rosman.ipynb`.
+
+![Rossmann Log-Transformed RMSE](assets/summary/rossmann_scaled_rmse.png)
+
+This visualization compares all Rossmann log-transformed RMSE rows from Table 4. It shows how the proposed method performs under the transformed target setting used during training, alongside the log-transformed baseline adaptations.
 
 ## Repository Structure
 
