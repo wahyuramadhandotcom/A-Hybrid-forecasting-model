@@ -145,6 +145,12 @@ Pipeline summary:
 | Rossmann original scale | `LR-XGBoost (Residual)` | `RMSE=577.63`, `MSE=333,659.51`, `RMSPE=0.06840`, `R^2=0.9651`, `MAE=376.12` |
 | Rossmann log-transformed table | `LR-XGBoost (Residual)` | `RMSE=0.07022`, `MSE=0.00493`, `R^2=0.97238`, `MAE=0.05373` |
 
+### Performance Analysis and Dataset Dynamics
+While the proposed two-stage LR-XGBoost framework demonstrates robust predictive accuracy across both domains, the magnitude of performance improvement varies significantly depending on the structural characteristics of the underlying data.
+* **Incremental Gains in Pharmacological Demand:** On the PharmaSales dataset, the proposed framework yields incremental yet consistent improvements over statistical and neural baselines. This marginal performance gap is largely attributed to the stochastic and often zero-inflated nature of univariate pharmacological consumption. Because the dataset relies heavily on endogenous temporal lags without rich external drivers, the first-stage linear model captures the majority of the observable variance. The secondary XGBoost stage effectively acts as a fine-tuning regularizer, stabilizing the forecast and preventing the overfitting commonly observed in standalone deep learning models under high-noise conditions.
+* **Significant Superiority in Retail Forecasting:** Conversely, the framework exhibits highly significant and substantial superiority on the Rossmann Store Sales dataset. Retail environments are characterized by complex, multidimensional exogenous variables (e.g., overlapping promotional cycles, school holidays, and competitor proximity) that induce sharp, non-linear demand shocks. In this context, the linear regression baseline successfully filters out deterministic calendar effects, allowing XGBoost to fully exploit its gradient-boosting architecture to map the deep, non-linear interactions of the promotional features. This explicit decomposition is what enables the hybrid model to decisively outperform complex architectures like Transformers and LSTMs in large-scale, feature-rich environments.
+
+
 The summary and residual visualizations are placed directly under each result table below.
 
 ### Table 1. Daily Forecasting Performance (RMSE) Across ATC Categories on PharmaSales Dataset
@@ -161,7 +167,7 @@ The summary and residual visualizations are placed directly under each result ta
 | **Proposed Method** |  |  |  |  |  |  |  |  |
 | LR-XGBoost (Residual) | 2.81 | 2.22 | 2.19 | 13.84 | 4.26 | 1.11 | 8.51 | 2.40 |
 
-Note: he numerical results presented in this table were reproduced by re-evaluating the referenced models and the proposed two-stage hybrid Linear Regression–XGBoost framework using our established experimental pipeline. The evaluation utilized time-series cross-validation to prevent data leakage and ensure realistic out-of-sample testing on a daily granularity.
+Note: The numerical results presented in this table were reproduced by re-evaluating the referenced models and the proposed two-stage hybrid Linear Regression–XGBoost framework using our established experimental pipeline. The evaluation utilized time-series cross-validation to prevent data leakage and ensure realistic out-of-sample testing on a daily granularity.
 
 ![PharmaSales Daily RMSE](assets/summary/pharma_daily_rmse.png)
 
