@@ -1,0 +1,26 @@
+{
+  "experiment": "exp05a_rossmann_arlrx",
+  "n_rows": 27,
+  "protocol": {
+    "split_ratios": [
+      0.7,
+      0.15,
+      0.15
+    ],
+    "tuning": "validation-only, refit on train+val",
+    "feature_sets": [
+      "A_lag1",
+      "B_rich"
+    ]
+  },
+  "environment": {
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v22-x86_64-with-glibc2.39",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "seed": "42",
+    "sklearn": "1.8.0",
+    "xgboost": "STUB",
+    "statsmodels": "unavailable"
+  }
+}

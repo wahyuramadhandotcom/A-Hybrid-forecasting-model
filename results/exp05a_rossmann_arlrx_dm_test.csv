@@ -1,0 +1,37 @@
+varian,AR-LRX (S1),pembanding,RMSE AR-LRX (log),RMSE pembanding (log),DM,p_value,AR-LRX lebih baik,signifikan (a=0.05)
+V1_customers_dropped,linear,XGBoost polos,0.15955,0.16269,-6.265,3.887199451213519e-10,True,True
+V1_customers_dropped,linear,Naif per toko,0.15955,0.16631,-8.336,0.0,True,True
+V1_customers_dropped,linear,Kerangka lama,0.15955,0.15955,,,False,False
+V1_customers_dropped,linear,S1 [linear] sendirian,0.15955,0.29552,-52.074,0.0,True,True
+V1_customers_dropped,structural,XGBoost polos,0.15656,0.16269,-8.286,2.220446049250313e-16,True,True
+V1_customers_dropped,structural,Naif per toko,0.15656,0.16631,-17.536,0.0,True,True
+V1_customers_dropped,structural,Kerangka lama,0.15656,0.15955,-5.103,3.4109996427389433e-07,True,True
+V1_customers_dropped,structural,S1 [structural] sendirian,0.15656,0.1608,-8.309,0.0,True,True
+V1_customers_dropped,struct_linear,XGBoost polos,0.15664,0.16269,-7.573,3.9745984281580604e-14,True,True
+V1_customers_dropped,struct_linear,Naif per toko,0.15664,0.16631,-19.78,0.0,True,True
+V1_customers_dropped,struct_linear,Kerangka lama,0.15664,0.15955,-4.7,2.6337806697807054e-06,True,True
+V1_customers_dropped,struct_linear,S1 [struct_linear] sendirian,0.15664,0.15958,-7.002,2.701838752727781e-12,True,True
+V2_customers_lagged,linear,XGBoost polos,0.13343,0.1314,4.291,1.7980785462334836e-05,False,True
+V2_customers_lagged,linear,Naif per toko,0.13343,0.16631,-23.78,0.0,True,True
+V2_customers_lagged,linear,Kerangka lama,0.13343,0.13098,12.622,0.0,False,True
+V2_customers_lagged,linear,S1 [linear] sendirian,0.13343,0.23681,-51.383,0.0,True,True
+V2_customers_lagged,structural,XGBoost polos,0.13198,0.1314,0.786,0.43187647402068685,False,False
+V2_customers_lagged,structural,Naif per toko,0.13198,0.16631,-29.382,0.0,True,True
+V2_customers_lagged,structural,Kerangka lama,0.13198,0.13098,1.348,0.17766338654338698,False,False
+V2_customers_lagged,structural,S1 [structural] sendirian,0.13198,0.1608,-26.314,0.0,True,True
+V2_customers_lagged,struct_linear,XGBoost polos,0.13247,0.1314,1.459,0.14465846242311065,False,False
+V2_customers_lagged,struct_linear,Naif per toko,0.13247,0.16631,-29.311,0.0,True,True
+V2_customers_lagged,struct_linear,Kerangka lama,0.13247,0.13098,2.073,0.03815987809910237,False,True
+V2_customers_lagged,struct_linear,S1 [struct_linear] sendirian,0.13247,0.15967,-26.581,0.0,True,True
+V3_sales_lagged,linear,XGBoost polos,0.13035,0.12379,12.34,0.0,False,True
+V3_sales_lagged,linear,Naif per toko,0.13035,0.16631,-22.84,0.0,True,True
+V3_sales_lagged,linear,Kerangka lama,0.13035,0.12335,17.97,0.0,False,True
+V3_sales_lagged,linear,S1 [linear] sendirian,0.13035,0.22444,-51.204,0.0,True,True
+V3_sales_lagged,structural,XGBoost polos,0.12669,0.12379,3.415,0.0006400203435121821,False,True
+V3_sales_lagged,structural,Naif per toko,0.12669,0.16631,-32.635,0.0,True,True
+V3_sales_lagged,structural,Kerangka lama,0.12669,0.12335,3.987,6.749216104062761e-05,False,True
+V3_sales_lagged,structural,S1 [structural] sendirian,0.12669,0.1608,-30.179,0.0,True,True
+V3_sales_lagged,struct_linear,XGBoost polos,0.1263,0.12379,2.973,0.002959975068737908,False,True
+V3_sales_lagged,struct_linear,Naif per toko,0.1263,0.16631,-32.923,0.0,True,True
+V3_sales_lagged,struct_linear,Kerangka lama,0.1263,0.12335,3.649,0.0002648457736438292,False,True
+V3_sales_lagged,struct_linear,S1 [struct_linear] sendirian,0.1263,0.15704,-29.982,0.0,True,True

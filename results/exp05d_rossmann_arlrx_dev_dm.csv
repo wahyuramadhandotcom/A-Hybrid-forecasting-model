@@ -1,0 +1,16 @@
+varian,model,pembanding,DM (log),p (log),DM (asli),p (asli),menang log,menang asli,sepakat
+V1_customers_dropped,AR-LRX-Aug [struct_linear],XGBoost polos,-82.571,0.0,-65.459,0.0,True,True,True
+V1_customers_dropped,AR-LRX-Aug [struct_linear],Naif per toko,-40.949,0.0,-33.014,0.0,True,True,True
+V1_customers_dropped,AR-LRX-Aug [struct_linear],Kerangka lama,-82.691,0.0,-65.472,0.0,True,True,True
+V1_customers_dropped,AR-LRX-Aug [struct_linear],S1 [struct_linear] sendirian,-24.696,0.0,-13.297,0.0,True,True,True
+V1_customers_dropped,AR-LRX-Aug [struct_linear],AR-LRX skalar [struct_linear] (exp05b),-11.863,0.0,-5.729,1.0141688155940187e-08,True,True,True
+V2_customers_lagged,AR-LRX-Aug [structural],XGBoost polos,-41.827,0.0,-29.837,0.0,True,True,True
+V2_customers_lagged,AR-LRX-Aug [structural],Naif per toko,-83.88,0.0,-59.564,0.0,True,True,True
+V2_customers_lagged,AR-LRX-Aug [structural],Kerangka lama,-42.501,0.0,-29.264,0.0,True,True,True
+V2_customers_lagged,AR-LRX-Aug [structural],S1 [structural] sendirian,-78.333,0.0,-55.016,0.0,True,True,True
+V2_customers_lagged,AR-LRX-Aug [structural],AR-LRX skalar [structural] (exp05b),-39.227,0.0,-22.505,0.0,True,True,True
+V3_sales_lagged,AR-LRX-Aug [structural],XGBoost polos,-31.452,0.0,-23.329,0.0,True,True,True
+V3_sales_lagged,AR-LRX-Aug [structural],Naif per toko,-97.102,0.0,-69.717,0.0,True,True,True
+V3_sales_lagged,AR-LRX-Aug [structural],Kerangka lama,-31.131,0.0,-17.222,0.0,True,True,True
+V3_sales_lagged,AR-LRX-Aug [structural],S1 [structural] sendirian,-92.797,0.0,-66.583,0.0,True,True,True
+V3_sales_lagged,AR-LRX-Aug [structural],AR-LRX skalar [structural] (exp05b),-49.2,0.0,-30.725,0.0,True,True,True
