@@ -33,7 +33,7 @@ dist/
 *.key
 
 # --- Data & model artifacts (umumnya besar, jangan di-commit) ---
-data/raw/
+#data/raw/
 data/interim/
 data/processed/
 *.csv
