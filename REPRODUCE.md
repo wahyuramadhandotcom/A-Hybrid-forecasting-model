@@ -49,6 +49,7 @@ if the weaker pass is also in the repository.
 | Figure 3 — regime diagnostic | `figures_paper` | `exp05b_..._audit.csv`, `exp05d_..._dev.csv`, `exp05c_..._gate.csv` |
 | Figure 4 — degradation distribution | `figures_paper` | `exp05c_..._comparison.csv`, `exp05c_..._gate.csv` |
 | Figure 5 — validation indicator across regimes | `figures_paper` | `exp05b_..._audit.csv`, `exp05c_..._gate.csv` |
+| Section 5.3 — comparison with published values | (no run) | `results/published_baseline_values.csv` |
 
 ## 3. The experimental contract
 
