@@ -99,7 +99,20 @@ Every file the paper was written from, including the `.meta.json` files that hol
 environment stamp and the split boundaries promised by the availability statement.
 No number in the paper requires a notebook to be re-run.
 
-## 6. Environment
+## 6. Data
+
+Both panels are public. The copies in `data/raw/` are as downloaded, unmodified, and
+are included here so that a run does not depend on the sources remaining reachable.
+
+| Panel | Source | Files used | Path expected by the notebooks |
+|---|---|---|---|
+| Rossmann retail | Kaggle competition *Rossmann Store Sales* (`kaggle.com/c/rossmann-store-sales`) | `train.csv`, `test.csv`, `store.csv` | `data/raw/rossmann/` |
+| PharmaSales | Kaggle dataset *Pharma sales data* by M. Zdravkovic (`kaggle.com/datasets/milanzdravkovic/pharma-sales-data`) | `salesdaily.csv`, `salesweekly.csv` | `data/raw/pharma-sales/` |
+
+The Rossmann competition requires a Kaggle account and acceptance of the competition
+rules before the files can be downloaded.
+
+## 7. Environment
 
 ```
 Python 3.10.11 (Windows, CPU only)
