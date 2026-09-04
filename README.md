@@ -64,27 +64,32 @@ configurations. `exp06_rossmann_baselines_unified.ipynb` is the first, weaker ba
 pass; it is kept so that the improvement reported in Section 3.3 of the paper can be
 checked rather than taken on trust.
 
-`docs/` carries a short note per experiment recording what that run established, what
-objection it closes, and — where an earlier reading turned out to be wrong — what was
-corrected and why.
+## Reimplemented Baselines
 
-## Benchmark Notebooks
+The baselines are not run as separate per-study pipelines. They are defined once in
+`src/experiments/baselines.py` and trained under the same contract as AR-LRX, which is
+the point of Section 2.5 of the paper — no error value is quoted from another paper.
 
-Supporting notebooks reproduce the source studies whose models are retrained here —
-Diamantini et al. (MLP, CNN, RNN, LSTM, Transformer), Qureshi et al. (GRU), Zeng et al.
-(LightGBM), Zhaoweijie et al. (XGBoost) on Rossmann, and Zdravković, Fourkiotis and
-Rathipriya on PharmaSales.
+That module holds the architectures themselves and names the study each one follows:
+`MLP (Diamantini)`, `CNN (Diamantini)`, `RNN (Diamantini)`, `LSTM (Diamantini / Qureshi)`,
+`GRU (Qureshi)`, `Transformer (Diamantini)`, `LightGBM (Zeng)`, and XGBoost over the
+hyperparameter region reported by Zhaoweijie et al. It also carries both search grids —
+the first-pass grid and the widened one — so that the strengthening reported in Table 5
+of the paper can be inspected rather than taken on trust.
+
+`exp06_rossmann_baselines_unified.ipynb` and `exp06b_rossmann_baselines_strong.ipynb`
+call that module for Rossmann; `exp01_pharma_daily_unified.ipynb` and
+`exp02_pharma_weekly_unified.ipynb` do the same for PharmaSales.
 
 ## Setup Requirements
 
-`uv` package manager, Jupyter, and core dependencies: scikit-learn, xgboost, lightgbm,
+Jupyter and the core dependencies: scikit-learn, xgboost, lightgbm,
 tensorflow, prophet, statsmodels, pmdarima. Everything runs on CPU; a GPU is not required
 and, on native Windows, not available to TensorFlow ≥2.11.
 
-`pyproject.toml` declares `requires-python = ">=3.12"`, but the results reported in the
-paper were produced on **Python 3.10.11** with the versions listed in
-[REPRODUCE.md](REPRODUCE.md). If you intend the lockfile to describe the environment the
-paper was run in, relax that constraint before publishing the repository.
+No lockfile is distributed. The results reported in the paper were produced on
+**Python 3.10.11** under Windows, CPU only, with the package versions listed in
+[REPRODUCE.md](REPRODUCE.md); install those versions to reproduce them exactly.
 
 ## Datasets
 
