@@ -1,6 +1,6 @@
 {
-  "experiment": "exp05a_rossmann_arlrx",
-  "n_rows": 27,
+  "experiment": "exp02_pharma_weekly",
+  "n_rows": 152,
   "protocol": {
     "split_ratios": [
       0.7,

@@ -1,0 +1,80 @@
+{
+  "exp01_pharma_daily": {
+    "experiment": "exp01_pharma_daily",
+    "n_rows": 152,
+    "protocol": {
+      "split_ratios": [
+        0.7,
+        0.15,
+        0.15
+      ],
+      "tuning": "validation-only, refit on train+val",
+      "feature_sets": [
+        "A_lag1",
+        "B_rich"
+      ]
+    },
+    "environment": {
+      "python": "3.10.11",
+      "platform": "Windows-10-10.0.22621-SP0",
+      "numpy": "2.2.6",
+      "pandas": "2.3.3",
+      "seed": "42",
+      "sklearn": "1.7.2",
+      "xgboost": "3.2.0",
+      "statsmodels": "0.14.6"
+    }
+  },
+  "exp02_pharma_weekly": {
+    "experiment": "exp02_pharma_weekly",
+    "n_rows": 152,
+    "protocol": {
+      "split_ratios": [
+        0.7,
+        0.15,
+        0.15
+      ],
+      "tuning": "validation-only, refit on train+val",
+      "feature_sets": [
+        "A_lag1",
+        "B_rich"
+      ]
+    },
+    "environment": {
+      "python": "3.10.11",
+      "platform": "Windows-10-10.0.22621-SP0",
+      "numpy": "2.2.6",
+      "pandas": "2.3.3",
+      "seed": "42",
+      "sklearn": "1.7.2",
+      "xgboost": "3.2.0",
+      "statsmodels": "0.14.6"
+    }
+  },
+  "exp03_rossmann_leakage_ablation": {
+    "experiment": "exp03_rossmann_leakage_ablation",
+    "n_rows": 20,
+    "protocol": {
+      "split_ratios": [
+        0.7,
+        0.15,
+        0.15
+      ],
+      "tuning": "validation-only, refit on train+val",
+      "feature_sets": [
+        "A_lag1",
+        "B_rich"
+      ]
+    },
+    "environment": {
+      "python": "3.10.11",
+      "platform": "Windows-10-10.0.22621-SP0",
+      "numpy": "2.2.6",
+      "pandas": "2.3.3",
+      "seed": "42",
+      "sklearn": "1.7.2",
+      "xgboost": "3.2.0",
+      "statsmodels": "0.14.6"
+    }
+  }
+}

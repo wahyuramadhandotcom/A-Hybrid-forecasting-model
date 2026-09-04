@@ -1,0 +1,9 @@
+pembanding,RMSE pembanding,DM (log),p (log),DM (asli),p (asli),AR-LRX-Aug menang (asli),sepakat
+XGBoost (grid Zhao),1014.2690309403869,-29.886,0.0,-22.111,0.0,True,True
+LightGBM (Zeng),1015.7271073412617,-29.092,0.0,-25.021,0.0,True,True
+RNN (Diamantini),1242.7339608491895,-71.818,0.0,-45.302,0.0,True,True
+LSTM (Diamantini / Qureshi),1253.7581999759093,-75.878,0.0,-56.349,0.0,True,True
+MLP (Diamantini),1257.2473792192382,-70.164,0.0,-52.368,0.0,True,True
+GRU (Qureshi),1275.2939187792822,-79.062,0.0,-58.255,0.0,True,True
+CNN (Diamantini),1288.277542391588,-79.682,0.0,-53.976,0.0,True,True
+Transformer (Diamantini),2319.5413953128564,-140.381,0.0,-130.397,0.0,True,True

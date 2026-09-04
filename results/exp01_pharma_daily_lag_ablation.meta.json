@@ -1,6 +1,6 @@
 {
-  "experiment": "exp05a_rossmann_arlrx",
-  "n_rows": 27,
+  "experiment": "exp01_pharma_daily_lag_ablation",
+  "n_rows": 80,
   "protocol": {
     "split_ratios": [
       0.7,

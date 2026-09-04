@@ -1,0 +1,216 @@
+diff --git a/notebooks/our_study_pharma_daily.ipynb b/notebooks/our_study_pharma_daily.ipynb
+index 8b163f4..b4ffbac 100644
+--- a/notebooks/our_study_pharma_daily.ipynb
++++ b/notebooks/our_study_pharma_daily.ipynb
+@@ -69,6 +69,22 @@
+     "logging.getLogger('tqdm').setLevel(logging.WARNING)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "# === Reproducibility (ditambahkan pada revisi) ===\n",
++    "# Satu seed global untuk seluruh notebook. SETIAP estimator stokastik\n",
++    "# di bawah menerima random_state=SEED secara eksplisit.\n",
++    "import os, random\n",
++    "SEED = 42\n",
++    "os.environ['PYTHONHASHSEED'] = str(SEED)\n",
++    "random.seed(SEED)\n",
++    "np.random.seed(SEED)\n"
++   ]
++  },
+   {
+    "cell_type": "markdown",
+    "metadata": {},
+@@ -557,13 +573,13 @@
+     "    lr_model.fit(X_train, y_train)\n",
+     "    lr_predictions = lr_model.predict(X_test)\n",
+     "\n",
+-    "    xgb_model = xgb.XGBRegressor(objective='reg:squarederror')\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED, objective='reg:squarederror')\n",
+     "\n",
+     "    grid_search = GridSearchCV(xgb_model, param_grid, scoring='neg_mean_squared_error')\n",
+     "    grid_search.fit(X_train, y_train)\n",
+     "    best_params = grid_search.best_params_\n",
+     "\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=best_params['n_estimators'], \n",
+     "        learning_rate=best_params['learning_rate'],\n",
+@@ -641,7 +657,7 @@
+     "    lr_model.fit(X_train, y_train)\n",
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror',\n",
+     "        n_estimators=n_estimators,\n",
+     "        learning_rate=learning_rate,\n",
+@@ -914,7 +930,7 @@
+     "    grid_search.fit(X_train_combined, lr_residuals)\n",
+     "    best_params = grid_search.best_params_\n",
+     "\n",
+-    "    xgb_final = xgb.XGBRegressor(\n",
++    "    xgb_final = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror',\n",
+     "        **best_params\n",
+     "    )\n",
+@@ -1335,7 +1351,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+@@ -1889,7 +1905,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+@@ -2675,7 +2691,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+diff --git a/notebooks/our_study_pharma_weekly.ipynb b/notebooks/our_study_pharma_weekly.ipynb
+index 8ca9f57..8bfec76 100644
+--- a/notebooks/our_study_pharma_weekly.ipynb
++++ b/notebooks/our_study_pharma_weekly.ipynb
+@@ -89,6 +89,22 @@
+     "optuna.logging.set_verbosity(optuna.logging.ERROR)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "# === Reproducibility (ditambahkan pada revisi) ===\n",
++    "# Satu seed global untuk seluruh notebook. SETIAP estimator stokastik\n",
++    "# di bawah menerima random_state=SEED secara eksplisit.\n",
++    "import os, random\n",
++    "SEED = 42\n",
++    "os.environ['PYTHONHASHSEED'] = str(SEED)\n",
++    "random.seed(SEED)\n",
++    "np.random.seed(SEED)\n"
++   ]
++  },
+   {
+    "cell_type": "markdown",
+    "metadata": {},
+@@ -528,7 +544,7 @@
+     "    lr_model.fit(X_train_combined, y_train_combined)\n",
+     "    lr_pred_test = lr_model.predict(X_test)\n",
+     "\n",
+-    "    xgb_base = xgb.XGBRegressor(objective='reg:squarederror')\n",
++    "    xgb_base = xgb.XGBRegressor(random_state=SEED, objective='reg:squarederror')\n",
+     "    grid_search = GridSearchCV(\n",
+     "        xgb_base,\n",
+     "        param_grid,\n",
+@@ -537,7 +553,7 @@
+     "    grid_search.fit(X_train_combined, y_train_combined)\n",
+     "    best_params = grid_search.best_params_\n",
+     "\n",
+-    "    xgb_final = xgb.XGBRegressor(\n",
++    "    xgb_final = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=best_params['n_estimators'], \n",
+     "        learning_rate=best_params['learning_rate'],\n",
+@@ -627,7 +643,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+@@ -983,7 +999,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+@@ -1535,7 +1551,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+@@ -2305,7 +2321,7 @@
+     "    lr_test_predictions = lr_model.predict(X_test)\n",
+     "\n",
+     "    # XGBost model\n",
+-    "    xgb_model = xgb.XGBRegressor(\n",
++    "    xgb_model = xgb.XGBRegressor(random_state=SEED,\n",
+     "        objective='reg:squarederror', \n",
+     "        n_estimators=n_estimators, \n",
+     "        learning_rate=learning_rate,\n",
+diff --git a/notebooks/our_study_rosman.ipynb b/notebooks/our_study_rosman.ipynb
+index 21fb8af..a6f2027 100644
+--- a/notebooks/our_study_rosman.ipynb
++++ b/notebooks/our_study_rosman.ipynb
+@@ -61,6 +61,22 @@
+     "optuna.logging.set_verbosity(optuna.logging.ERROR)"
+    ]
+   },
++  {
++   "cell_type": "code",
++   "execution_count": null,
++   "metadata": {},
++   "outputs": [],
++   "source": [
++    "# === Reproducibility (ditambahkan pada revisi) ===\n",
++    "# Satu seed global untuk seluruh notebook. SETIAP estimator stokastik\n",
++    "# di bawah menerima random_state=SEED secara eksplisit.\n",
++    "import os, random\n",
++    "SEED = 42\n",
++    "os.environ['PYTHONHASHSEED'] = str(SEED)\n",
++    "random.seed(SEED)\n",
++    "np.random.seed(SEED)\n"
++   ]
++  },
+   {
+    "cell_type": "code",
+    "execution_count": 3,
+@@ -1375,7 +1391,7 @@
+     }
+    ],
+    "source": [
+-    "xgb_model = XGBRegressor(\n",
++    "xgb_model = XGBRegressor(random_state=SEED,\n",
+     "    objective='reg:squarederror', \n",
+     "    n_estimators=best_params['n_estimators'], \n",
+     "    max_depth=best_params['max_depth'],\n",
+@@ -1384,7 +1400,9 @@
+     "    # colsample_bytree=best_params['colsample_bytree'],\n",
+     ")\n",
+     "\n",
+-    "xgb_model.fit(X_train, y_train)\n",
++    "# FIX: sebelumnya fit pada X_train (mentah) tetapi predict pada\n",
++    "# X_test_scaled (ter-skala) -- train/predict scaling mismatch.\n",
++    "xgb_model.fit(X_train_scaled, y_train)\n",
+     "xgb_predictions = xgb_model.predict(X_test_scaled)\n",
+     "\n",
+     "# hitung RMSE\n",

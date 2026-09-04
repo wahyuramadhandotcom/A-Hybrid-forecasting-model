@@ -24,8 +24,12 @@ Runtimes are from the authors' machine (Windows, Python 3.10.11, CPU only).
 | 7 | `exp05d_rossmann_arlrx_dev.ipynb` | Augmented and segmented gate variants | 2.1 h |
 | 8 | `exp06_rossmann_baselines_unified.ipynb` | First pass at the eight retrained baselines | 6.5 h |
 | 9 | `exp06b_rossmann_baselines_strong.ipynb` | Baselines retrained **correctly** — this is the pass reported in the paper | 19.1 h |
-| 10 | `exp05c_pharma_arlrx.ipynb` | AR-LRX on the 32 pharmaceutical configurations | ~40 min |
+| 10 | `exp05c_pharma_arlrx.ipynb` | AR-LRX on the 32 pharmaceutical configurations | ~20 min |
 | 11 | `figures_paper.ipynb` | Figures 2–5, read from `results/` only | ~5 s |
+
+`notebooks/` also holds the notebooks of the earlier study, whose file names carry the
+name of the work each one reimplements. They are kept for provenance and are not part
+of the run order above.
 
 `exp06` is kept deliberately. Section 3.3 of the paper reports how much the neural
 baselines improved once their training was corrected, and that claim is only checkable
@@ -49,6 +53,7 @@ if the weaker pass is also in the repository.
 | Figure 3 — regime diagnostic | `figures_paper` | `exp05b_..._audit.csv`, `exp05d_..._dev.csv`, `exp05c_..._gate.csv` |
 | Figure 4 — degradation distribution | `figures_paper` | `exp05c_..._comparison.csv`, `exp05c_..._gate.csv` |
 | Figure 5 — validation indicator across regimes | `figures_paper` | `exp05b_..._audit.csv`, `exp05c_..._gate.csv` |
+| Section 5.3 — comparison with published values | (no run) | `results/published_baseline_values.csv` |
 
 ## 3. The experimental contract
 
@@ -88,27 +93,11 @@ cannot drift apart.
 | `kerangka lama` | The ungated residual hybrid of the earlier study |
 | `sumbangan gerbang (%)` | Contribution of the gate, in per cent of RMSE |
 
-## 5. Result files still to copy from your own run
+## 5. What `results/` carries
 
-`results/` in this repository carries the files the paper was written from. The
-following are produced by the notebooks but were not needed while writing, so copy
-them from your local `results/` folder before pushing, or re-run the notebook that
-writes them:
-
-```
-exp05b_rossmann_arlrx_audit.meta.json
-exp05c_pharma_arlrx.csv
-exp05c_pharma_arlrx.meta.json
-exp05c_pharma_arlrx_aug_effect.csv
-exp05d_rossmann_arlrx_dev.meta.json
-exp06_rossmann_baselines_unified.meta.json
-exp06_rossmann_baselines_unified_dm.csv
-exp06b_rossmann_baselines_strong.meta.json
-exp06b_rossmann_baselines_strong_dm.csv
-```
-
-The `.meta.json` files matter: they carry the environment stamp and the split
-boundaries that the availability statement in the paper promises.
+Every file the paper was written from, including the `.meta.json` files that hold the
+environment stamp and the split boundaries promised by the availability statement.
+No number in the paper requires a notebook to be re-run.
 
 ## 6. Environment
 

@@ -1,6 +1,6 @@
 {
-  "experiment": "exp05a_rossmann_arlrx",
-  "n_rows": 27,
+  "experiment": "exp06_rossmann_baselines_unified",
+  "n_rows": 8,
   "protocol": {
     "split_ratios": [
       0.7,

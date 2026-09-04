@@ -1,0 +1,9 @@
+varian,pembanding,RMSE usulan (log),RMSE pembanding (log),DM,p_value,usulan lebih baik
+V0_customers_contemporaneous,SeasonalNaive,0.0871,0.16479,-118.364,0.0,True
+V0_customers_contemporaneous,XGBoost,0.0871,0.08698,0.992,0.3210346065079861,False
+V1_customers_dropped,SeasonalNaive,0.21246,0.16479,66.344,0.0,False
+V1_customers_dropped,XGBoost,0.21246,0.2121,2.76,0.005786301453689191,False
+V2_customers_lagged,SeasonalNaive,0.14271,0.16479,-44.573,0.0,True
+V2_customers_lagged,XGBoost,0.14271,0.14177,6.172,6.752569614576487e-10,False
+V3_sales_lagged,SeasonalNaive,0.13221,0.16479,-59.504,0.0,True
+V3_sales_lagged,XGBoost,0.13221,0.1314,5.242,1.5943765618864347e-07,False

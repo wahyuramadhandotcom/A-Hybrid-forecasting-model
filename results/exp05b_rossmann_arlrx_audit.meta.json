@@ -1,5 +1,5 @@
 {
-  "experiment": "exp05a_rossmann_arlrx",
+  "experiment": "exp05b_rossmann_arlrx_audit",
   "n_rows": 27,
   "protocol": {
     "split_ratios": [

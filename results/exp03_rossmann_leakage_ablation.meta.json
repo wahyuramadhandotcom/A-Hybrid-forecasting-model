@@ -1,6 +1,6 @@
 {
-  "experiment": "exp05a_rossmann_arlrx",
-  "n_rows": 27,
+  "experiment": "exp03_rossmann_leakage_ablation",
+  "n_rows": 20,
   "protocol": {
     "split_ratios": [
       0.7,
