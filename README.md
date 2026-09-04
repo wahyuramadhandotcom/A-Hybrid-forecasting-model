@@ -13,10 +13,7 @@ and evaluated under one experimental contract. Nothing is quoted from another pa
 ## Repository Structure
 
 **Top-level folders and files:**
-- `assets/` — Architecture diagrams and summary visualizations
 - `data/` — Raw datasets and data documentation
-- `docs/` — Per-experiment notes: what each run established and what it closed
-- `models/` — Saved model artifacts
 - `notebooks/` — Experiment, benchmark and figure notebooks
 - `paper/figures/` — The five figures of the manuscript, at publication resolution
 - `results/` — Machine-readable result files, one set per experiment
@@ -25,9 +22,7 @@ and evaluated under one experimental contract. Nothing is quoted from another pa
 - `.gitignore`
 - `README.md`
 - `REPRODUCE.md` — Which notebook and which result file produces each table and figure
-- `VISUALIZATION_PLAN.md`
-- `pyproject.toml`
-- `uv.lock`
+
 
 ## Overview
 
