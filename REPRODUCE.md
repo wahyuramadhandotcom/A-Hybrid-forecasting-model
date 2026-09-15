@@ -65,7 +65,7 @@ retrained baselines.
 | C1 | Chronological 70/15/15 split; no observation from a later block precedes one from an earlier block |
 | C2 | Hyperparameters selected by minimising **validation** RMSE; the test block is never consulted during selection |
 | C3 | The selected configuration is refitted on training + validation before the test block is predicted once |
-| C4 | Seed 42 everywhere; tree-based results verified bit-identical across repeated runs |
+| C4 | Seed 42 everywhere; tree-based results verified bit-identical across repeated runs on the same platform |
 | C5 | Autoregressive lag count chosen from the PACF of the **training block alone** |
 | C6 | Scalers, group means and every other fitted statistic estimated on the block currently being trained on |
 | C7 | Every experiment writes a result file with all metrics, selected hyperparameters, split boundaries and an environment stamp |
@@ -121,6 +121,66 @@ xgboost 3.2.0    lightgbm 4.7.0     statsmodels 0.14.6
 keras 3.12.4     tensorflow 2.21.0
 ```
 
-Tree-based components — AR-LRX included — reproduce bit for bit across runs, selected
-hyperparameters and gate weights included. The neural baselines do not, because TensorFlow's
+Tree-based components — AR-LRX included — reproduce bit for bit across runs on the same
+platform, selected hyperparameters and gate weights included. They do **not** reproduce
+bit for bit across operating systems: with the same package versions, XGBoost with
+row/column subsampling below 1 gives slightly different fits on Windows and on Linux
+(checked on `exp05c`: plain XGBoost with identical hyperparameters differs in the fourth
+significant digit, which is enough to change some validation-selected configurations).
+Every number in the paper therefore comes from the single environment listed above. The
+neural baselines are not bit-reproducible even on one platform, because TensorFlow's
 multithreaded CPU kernels are not deterministic; this is stated as a limitation in the paper.
+
+## 8. Revision R1-1: cross-fitted residuals (September 2026)
+
+**What changed.** Until this revision the residuals that train the second stage were
+in-sample, `y - S1(X)` with `S1` fitted on the same rows. For the structural first stage
+each row then contributes to the group mean that predicts it, and the augmented variant
+also passes that prediction to XGBoost as a feature. Residuals are now formed from
+cross-fitted first-stage predictions: the block being fitted (training during tuning,
+training + validation during the final refit) is cut into
+`N_CROSS_FIT_FOLDS = 5` contiguous chronological folds, and each fold is predicted by a
+first stage fitted on the other four. Validation and test predictions of the first stage
+are unchanged; they always came from a first stage fitted on a disjoint block.
+
+The change covers every residual-trained model: `run_arlrx` and `run_arlrx_segmented`
+in `src/experiments/arlrx.py` (all three first stages, gated, segmented and augmented
+variants) and `fp_lr_xgb_residual` in `src/experiments/protocol.py` (the ungated
+residual hybrid). Both paths use the same folds, so a linear first stage with `w = 1`
+still reproduces the ungated hybrid exactly. `cross_fit_folds=None` restores the
+submitted, in-sample procedure bit for bit and exists only for the before/after audit.
+
+**What must be re-run**, in this order (runtimes from the authors' machine):
+
+| # | Notebook | Why | Runtime |
+|---|---|---|---|
+| 1 | `exp05a_rossmann_arlrx.ipynb` | residual-trained models; reference for the reproduction check in `exp05b` | 1.4 h |
+| 2 | `exp05b_rossmann_arlrx_audit.ipynb` | Tables 2, 4 (scales), gate curve, Figure 2 inputs | 1.2–1.4 h |
+| 3 | `exp05d_rossmann_arlrx_dev.ipynb` | augmented/segmented variants; Tables 2, 3, 6 | 1.5–2.1 h |
+| 4 | `exp05c_pharma_arlrx.ipynb` | Tables 7–9, Figures 3–5 inputs | ~20 min |
+| 5 | `exp06b_rossmann_baselines_strong.ipynb` | Tables 3 and 4 against the new AR-LRX rows | minutes |
+| 6 | `figures_paper.ipynb` | Figures 2–5 | seconds |
+
+`exp06b` does **not** retrain its baselines: none of them uses residuals, so with
+`REUSE_SAVED_BASELINES = True` (the default) it reloads them from
+`results/exp06b_rossmann_baselines_strong.csv` and
+`results/exp06b_rossmann_baselines_strong_predictions.npz`. Prediction files are not
+tracked by git (`*.npz`), so that file must come from the original run; set the flag to
+`False` to retrain instead (19 h). Every notebook that forms residuals refuses to start
+with a pre-revision `arlrx.py` / `protocol.py`.
+
+**Not re-run.** `exp01`–`exp04` and `exp06` belong to the earlier study or to Table 5,
+which compares baselines only. Their archived `LR-XGB (residual)` rows were produced with
+in-sample residuals and are reproduced with `cross_fit_folds=None`.
+
+**Before/after audit.** Both tools run the in-sample and the cross-fitted procedure in
+the same environment, because the platform difference described in Section 7 would
+otherwise be mixed into the comparison:
+
+```
+python tools/crossfit_audit_pharma.py      # all 32 configurations, ~10 min
+python tools/crossfit_audit_rossmann.py    # V3 by default; --variants for V1/V2
+```
+
+They write `results/exp05c_crossfit_audit_summary.csv` and
+`results/rossmann_crossfit_audit.csv`.

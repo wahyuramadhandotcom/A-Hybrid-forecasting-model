@@ -105,8 +105,10 @@ STAGE1_KINDS = ("linear", "structural", "struct_linear")
 # Jumlah lipatan cross-fitting default untuk pembentukan residual latih (R1-1).
 # 5, konsisten dengan N_GATE_FOLDS yang sudah dipakai untuk validasi-silang
 # gerbang per segmen (exp05d) -- bukan nilai baru yang perlu dijustifikasi
-# terpisah di naskah.
-N_CROSS_FIT_FOLDS = 5
+# terpisah di naskah. Satu sumber kebenaran: protocol.py (dipakai juga oleh
+# fp_lr_xgb_residual, sehingga kesetaraan S1=linear, w=1 dengan hibrida tanpa
+# gerbang tetap eksak).
+N_CROSS_FIT_FOLDS = P.N_CROSS_FIT_FOLDS
 
 
 # --------------------------------------------------------------------------- #
@@ -199,9 +201,9 @@ def make_stage1(kind: str, feature_names: Sequence[str]) -> Callable:
 # Cross-fitting tahap pertama (R1-1) -- lihat catatan revisi di atas.
 # --------------------------------------------------------------------------- #
 
-def _chrono_fold_bounds(n: int, n_folds: int) -> np.ndarray:
-    """Batas lipatan kronologis kontiguous, gaya sama dengan `_oof_gate_rmse`."""
-    return np.linspace(0, n, n_folds + 1).astype(int)
+# Batas lipatan kronologis kontiguous, gaya sama dengan `_oof_gate_rmse`;
+# didefinisikan di protocol.py agar fp_lr_xgb_residual memakai lipatan identik.
+_chrono_fold_bounds = P._chrono_fold_bounds
 
 
 def _cross_fitted_stage1(stage1: Callable, X: np.ndarray, y: np.ndarray,

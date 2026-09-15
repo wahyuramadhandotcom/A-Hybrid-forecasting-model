@@ -566,13 +566,15 @@ def fp_lr_xgb_average(X_fit, y_fit, X_eval, params):
     return (lr.predict(X_eval) + xgb_model.predict(X_eval)) / 2.0
 
 
-N_CROSS_FIT_FOLDS = 5  # konsisten dengan experiments.arlrx.N_CROSS_FIT_FOLDS (R1-1)
+# R1-1: jumlah lipatan cross-fitting untuk residual latih; experiments.arlrx
+# mengambil nilai dan batas lipatan dari sini (satu sumber kebenaran).
+N_CROSS_FIT_FOLDS = 5
 
 
 def _chrono_fold_bounds(n: int, n_folds: int) -> np.ndarray:
-    """Batas lipatan kronologis kontiguous -- lihat catatan revisi R1-1 pada
-    `fp_lr_xgb_residual` (versi identik dipakai `experiments.arlrx._cross_fitted_stage1`,
-    diduplikasi di sini agar protocol.py tidak bergantung pada experiments.arlrx)."""
+    """Batas lipatan kronologis kontiguous (R1-1). Dipakai oleh
+    `_cross_fitted_lr_predict` di sini dan oleh `experiments.arlrx._cross_fitted_stage1`,
+    sehingga kedua jalur cross-fitting memakai lipatan yang identik."""
     return np.linspace(0, n, n_folds + 1).astype(int)
 
 

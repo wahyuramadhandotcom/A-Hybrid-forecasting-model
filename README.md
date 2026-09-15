@@ -10,6 +10,14 @@ protocol-controlled evaluation behind
 Every model in the study, including eight baselines drawn from published work, is trained
 and evaluated under one experimental contract. Nothing is quoted from another paper.
 
+> **Revision in progress (15 September 2026).** In response to reviewer comment R1-1, the
+> residuals that train the second stage are now formed from **cross-fitted** first-stage
+> predictions (five chronological folds inside the block being fitted) instead of
+> in-sample predictions. The code on this branch implements the revised procedure; the
+> files in `results/` and the tables below still describe the submitted, in-sample
+> procedure until the affected notebooks have been re-run. Section 8 of
+> [REPRODUCE.md](REPRODUCE.md) lists what changed and what has to be re-run.
+
 ## Repository Structure
 
 **Top-level folders and files:**
@@ -18,7 +26,8 @@ and evaluated under one experimental contract. Nothing is quoted from another pa
 - `paper/figures/` — The five figures of the manuscript, at publication resolution
 - `results/` — Machine-readable result files, one set per experiment
 - `src/` — Shared utility functions and helpers
-- `tools/` — Determinism check used to verify C4
+- `tools/` — Determinism check used to verify C4, and the before/after audits for the
+  cross-fitted residual revision (`crossfit_audit_pharma.py`, `crossfit_audit_rossmann.py`)
 - `.gitignore`
 - `README.md`
 - `REPRODUCE.md` — Which notebook and which result file produces each table and figure
@@ -41,7 +50,7 @@ in full. AR-LRX generalises that design in two ways:
   hyperparameters on the validation fold. Because `w = 0` lies in the search space,
   AR-LRX cannot be worse than its own first stage on that fold; with a linear first
   stage and `w = 1` it reproduces the earlier design exactly, verified to machine
-  precision.
+  precision (with cross-fitted residuals as well: both paths share the same folds).
 
 The study is built around a question the earlier work could not answer: *is residual
 hybridization robust across demand regimes, and what does its robustness depend on?*
@@ -110,7 +119,7 @@ configuration because it matches the information a planner actually holds.
 | C1 | Chronological 70/15/15 split |
 | C2 | Hyperparameters selected on validation only |
 | C3 | Refit on training + validation, then one untouched evaluation on test |
-| C4 | Seed 42; tree-based results verified bit-identical across runs |
+| C4 | Seed 42; tree-based results verified bit-identical across runs on the same platform |
 | C5 | Lag count chosen from the PACF of the training block alone |
 | C6 | Every fitted statistic estimated on the active fitting block |
 | C7 | Every experiment writes metrics, hyperparameters, split boundaries and an environment stamp |
@@ -145,8 +154,11 @@ PharmaSales, 32 configurations:
 > RMSE = 577.63, R² = 0.9651. That configuration used `Customers` contemporaneously and
 > therefore does not describe a forecasting task; it is superseded by the numbers above.
 > Errors also move in *both* directions when the published baselines are retrained under
-> one contract — LightGBM improves by 40.5%, CNN worsens by 66.2% — which is why the
-> comparison in this study is restricted to models retrained here.
+> one contract — the CNN of Diamantini et al. improves from RMSE 1932.60 to 1288.28, while
+> the GRU of Qureshi et al., whose published figure comes from a random rather than a
+> chronological split, rises from 573.54 to 1275.29 — which is why the comparison in this
+> study is restricted to models retrained here. The published and retrained values of all
+> eight baselines are in `results/published_baseline_values.csv`.
 
 ## Figures
 
