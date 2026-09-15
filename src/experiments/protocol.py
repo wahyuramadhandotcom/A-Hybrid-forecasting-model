@@ -566,12 +566,74 @@ def fp_lr_xgb_average(X_fit, y_fit, X_eval, params):
     return (lr.predict(X_eval) + xgb_model.predict(X_eval)) / 2.0
 
 
-def fp_lr_xgb_residual(X_fit, y_fit, X_eval, params):
-    """METODE USULAN: LR memodelkan tren, XGBoost memodelkan residual LR."""
+N_CROSS_FIT_FOLDS = 5  # konsisten dengan experiments.arlrx.N_CROSS_FIT_FOLDS (R1-1)
+
+
+def _chrono_fold_bounds(n: int, n_folds: int) -> np.ndarray:
+    """Batas lipatan kronologis kontiguous -- lihat catatan revisi R1-1 pada
+    `fp_lr_xgb_residual` (versi identik dipakai `experiments.arlrx._cross_fitted_stage1`,
+    diduplikasi di sini agar protocol.py tidak bergantung pada experiments.arlrx)."""
+    return np.linspace(0, n, n_folds + 1).astype(int)
+
+
+def _cross_fitted_lr_predict(X: np.ndarray, y: np.ndarray, n_folds: int) -> np.ndarray:
+    """Prediksi in-block Linear Regression, cross-fitted lewat K lipatan
+    kronologis: tiap baris diprediksi oleh sebuah LR yang tidak pernah melihat
+    baris itu (atau y-nya). Lihat `fp_lr_xgb_residual` untuk konteks revisi."""
+    from sklearn.linear_model import LinearRegression
+
+    n = len(y)
+    if n_folds < 2:
+        raise ValueError(f"cross_fit_folds harus >= 2, dapat {n_folds}")
+    bounds = _chrono_fold_bounds(n, n_folds)
+    oof = np.full(n, np.nan)
+    for i in range(n_folds):
+        lo, hi = int(bounds[i]), int(bounds[i + 1])
+        if hi <= lo:
+            continue
+        held = np.zeros(n, dtype=bool)
+        held[lo:hi] = True
+        fit = ~held
+        if not fit.any():
+            raise ValueError("lipatan cross-fit mencakup seluruh blok yang diberikan")
+        oof[held] = LinearRegression().fit(X[fit], y[fit]).predict(X[held])
+    if np.isnan(oof).any():
+        raise RuntimeError("sebagian baris tidak tercakup oleh lipatan cross-fit")
+    return oof
+
+
+def fp_lr_xgb_residual(X_fit, y_fit, X_eval, params,
+                       cross_fit_folds: Optional[int] = N_CROSS_FIT_FOLDS):
+    """METODE USULAN (varian tanpa gerbang): LR memodelkan tren, XGBoost
+    memodelkan residual LR.
+
+    (R1-1, reviewer IJIES Paper ID 20265893, putaran ke-2) Sampai revisi ini,
+    residual yang melatih XGBoost dibentuk in-sample -- `y_fit - lr.predict(X_fit)`
+    dengan LR yang SAMA di-fit dan diprediksi pada X_fit. Fungsi ini dipakai di
+    exp05a/exp05b/exp05c sebagai baris pembanding "LR-XGB (residual, tanpa
+    gerbang)" berdampingan dengan AR-LRX; membiarkannya leaky sementara AR-LRX
+    sendiri sudah cross-fitted akan membuat perbandingan pincang dan tidak
+    menjawab keberatan reviewer secara menyeluruh.
+
+    Perbaikan identik dengan `experiments.arlrx._cross_fitted_stage1` (fungsi
+    ini adalah kasus S1="linear" tanpa gerbang): residual dibentuk dari
+    prediksi LR cross-fitted lewat K lipatan kronologis DI DALAM blok (X_fit,
+    y_fit) yang sedang di-fit -- berlaku sama pada fase tuning (X_fit=train)
+    maupun fase refit final (X_fit=train+val). Prediksi pada X_eval (val atau
+    test) TIDAK diubah -- selalu dari LR yang di-fit pada blok yang sepenuhnya
+    terpisah, sehingga tidak pernah bocor.
+
+    `cross_fit_folds=None` mereproduksi perilaku LAMA (in-sample, leaky) secara
+    sengaja, HANYA untuk tabel audit "sebelum vs sesudah" pada response letter
+    -- tidak untuk hasil utama naskah.
+    """
     from sklearn.linear_model import LinearRegression
 
     lr = LinearRegression().fit(X_fit, y_fit)
-    residual = y_fit - lr.predict(X_fit)
+    if cross_fit_folds is None:
+        residual = y_fit - lr.predict(X_fit)   # LEGACY, leaky -- hanya audit
+    else:
+        residual = y_fit - _cross_fitted_lr_predict(X_fit, y_fit, cross_fit_folds)
     xgb_model = make_xgb(params).fit(X_fit, residual)
     return lr.predict(X_eval) + xgb_model.predict(X_eval)
 

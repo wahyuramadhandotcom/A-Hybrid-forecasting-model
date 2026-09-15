@@ -41,6 +41,38 @@ Tiga komponen pengembangan yang menjawabnya:
 Kuantitas diagnostik `resid_val_r2` (R2 tahap kedua terhadap residual validation)
 dilaporkan pada setiap baris. Hubungan antara nilai itu dan gerbang w terpilih
 adalah kriteria empiris "kapan hibridisasi residual layak diterapkan".
+
+--------------------------------------------------------------------------------
+REVISI (R1-1, reviewer IJIES Paper ID 20265893, putaran ke-2): kebocoran residual
+in-sample.
+
+Sampai revisi ini, residual yang melatih tahap kedua dibentuk sebagai
+`y_fit - stage1(X_fit, y_fit).predict(X_fit)` -- tahap pertama di-fit dan
+diprediksi pada BLOK YANG SAMA. Untuk S1 = "linear" ini adalah residual latih
+standar (bias kecil, dikenal). Untuk S1 = "structural" / "struct_linear" ini
+jauh lebih serius: prediktor struktural adalah rata-rata kelompok (Toko x Hari
+x Promo), sehingga y observasi itu sendiri IKUT MEMBENTUK rata-rata kelompok
+yang dipakai memprediksinya -- residual yang dihasilkan sistematis terlalu
+kecil, sebanding 1/n_kelompok. Pada varian `augment_stage1=True` (skema Aug,
+pemenang exp05d/exp06b) prediksi in-sample yang sama itu JUGA disuntikkan
+sebagai fitur bagi XGBoost, sehingga tahap kedua bisa "mengintip" y lewat dua
+jalur sekaligus.
+
+Perbaikan: `_cross_fitted_stage1` membentuk residual latih lewat K lipatan
+kronologis DI DALAM blok yang sedang di-fit (train pada fase tuning; train+val
+pada fase refit final) -- setiap baris diprediksi oleh model tahap pertama
+yang TIDAK PERNAH melihat baris itu (atau y-nya). Ini berlaku pada seluruh S1
+(linear/structural/struct_linear) tanpa mengubah `make_stage1`: fungsi stage1
+dipanggil ulang sebagai kotak hitam pada tiap lipatan.
+
+Prediksi tahap pertama pada validation dan test TIDAK diubah -- keduanya sudah
+diprediksi oleh model yang di-fit pada blok yang sepenuhnya terpisah (train
+untuk validation; train+val untuk test), sehingga tidak pernah bocor.
+
+Parameter `cross_fit_folds=None` mereproduksi perilaku LAMA (in-sample) secara
+sengaja, HANYA untuk tabel audit "sebelum vs sesudah" pada response letter --
+tidak untuk hasil utama naskah.
+--------------------------------------------------------------------------------
 """
 
 from __future__ import annotations
@@ -69,6 +101,12 @@ GRID_XGB_ARLRX = {
 }
 
 STAGE1_KINDS = ("linear", "structural", "struct_linear")
+
+# Jumlah lipatan cross-fitting default untuk pembentukan residual latih (R1-1).
+# 5, konsisten dengan N_GATE_FOLDS yang sudah dipakai untuk validasi-silang
+# gerbang per segmen (exp05d) -- bukan nilai baru yang perlu dijustifikasi
+# terpisah di naskah.
+N_CROSS_FIT_FOLDS = 5
 
 
 # --------------------------------------------------------------------------- #
@@ -158,6 +196,56 @@ def make_stage1(kind: str, feature_names: Sequence[str]) -> Callable:
 
 
 # --------------------------------------------------------------------------- #
+# Cross-fitting tahap pertama (R1-1) -- lihat catatan revisi di atas.
+# --------------------------------------------------------------------------- #
+
+def _chrono_fold_bounds(n: int, n_folds: int) -> np.ndarray:
+    """Batas lipatan kronologis kontiguous, gaya sama dengan `_oof_gate_rmse`."""
+    return np.linspace(0, n, n_folds + 1).astype(int)
+
+
+def _cross_fitted_stage1(stage1: Callable, X: np.ndarray, y: np.ndarray,
+                         n_folds: int = N_CROSS_FIT_FOLDS) -> np.ndarray:
+    """Prediksi tahap pertama YANG DIPAKAI UNTUK MEMBENTUK RESIDUAL, cross-fitted.
+
+    Untuk tiap lipatan kronologis k di dalam blok (X, y) yang diberikan, tahap
+    pertama di-fit HANYA pada baris di luar lipatan k lalu memprediksi baris di
+    dalam lipatan k. Setiap baris karena itu diprediksi oleh sebuah model yang
+    tidak pernah melihat baris itu sendiri (atau y-nya) -- menjawab R1-1:
+    kebocoran residual in-sample, paling parah untuk penaksir struktural
+    (rata-rata kelompok yang memuat titiknya sendiri).
+
+    `stage1` diperlakukan sebagai kotak hitam (signature identik dengan yang
+    dikembalikan `make_stage1`); fungsi ini karena itu berlaku sama untuk
+    "linear", "structural", maupun "struct_linear" tanpa perubahan apa pun
+    pada `make_stage1`.
+
+    Lipatan kronologis kontiguous (bukan acak): konsisten dengan `_oof_gate_rmse`
+    yang sudah dipakai untuk seleksi gerbang per segmen, dan tetap deterministik
+    tanpa bergantung pada seed pengacakan.
+    """
+    n = len(y)
+    if n_folds < 2:
+        raise ValueError(f"cross_fit_folds harus >= 2, dapat {n_folds}")
+    bounds = _chrono_fold_bounds(n, n_folds)
+    oof = np.full(n, np.nan)
+    for i in range(n_folds):
+        lo, hi = int(bounds[i]), int(bounds[i + 1])
+        if hi <= lo:
+            continue
+        held = np.zeros(n, dtype=bool)
+        held[lo:hi] = True
+        fit = ~held
+        if not fit.any():
+            raise ValueError("lipatan cross-fit mencakup seluruh blok yang diberikan")
+        _, pred_held = stage1(X[fit], y[fit], X[held])
+        oof[held] = pred_held
+    if np.isnan(oof).any():
+        raise RuntimeError("sebagian baris tidak tercakup oleh lipatan cross-fit")
+    return oof
+
+
+# --------------------------------------------------------------------------- #
 # Runner AR-LRX (mengikuti kontrak C3/C6/C7 pada protocol.py)
 # --------------------------------------------------------------------------- #
 
@@ -168,18 +256,29 @@ def run_arlrx(model_name: str,
               gate_grid: Sequence[float] = GATE_GRID,
               clip_nonnegative: bool = True,
               inverse_transform: Optional[Callable] = None,
-              extra: Optional[Dict] = None) -> Dict:
+              extra: Optional[Dict] = None,
+              cross_fit_folds: Optional[int] = N_CROSS_FIT_FOLDS) -> Dict:
     """Satu baris hasil AR-LRX, skema kolom identik dengan `protocol.run_model`.
 
     Kontrak yang ditegakkan:
       * hyperparameter tahap kedua DAN gerbang w dipilih hanya dari RMSE validation;
       * tahap pertama di-fit ulang pada blok training aktif (train untuk tuning,
         train+val untuk refit), tidak pernah melihat test;
-      * test diprediksi tepat satu kali oleh konfigurasi final.
+      * test diprediksi tepat satu kali oleh konfigurasi final;
+      * (R1-1) residual yang melatih tahap kedua dibentuk dari prediksi tahap
+        pertama CROSS-FITTED di dalam blok yang sedang di-fit -- lihat catatan
+        revisi di kepala berkas dan `_cross_fitted_stage1`.
+
+    `cross_fit_folds`: jumlah lipatan cross-fitting (>=2). `None` mereproduksi
+    perilaku LAMA (residual in-sample, leaky) -- disediakan hanya untuk tabel
+    audit "sebelum vs sesudah" pada response letter, JANGAN dipakai untuk hasil
+    utama naskah.
 
     Catatan efisiensi: w tidak memengaruhi pelatihan tahap kedua, sehingga untuk
     setiap konfigurasi XGBoost seluruh nilai w dievaluasi tanpa pelatihan ulang.
-    Anggaran komputasinya karena itu sama dengan `run_model` biasa.
+    Anggaran komputasinya karena itu sama dengan `run_model` biasa, ditambah
+    `cross_fit_folds` kali fit tahap pertama (tahap pertama jauh lebih murah
+    daripada XGBoost, sehingga tambahan ini kecil).
     """
     t0 = time.time()
     grid = P.param_grid_list(param_grid) if param_grid else [{}]
@@ -190,7 +289,14 @@ def run_arlrx(model_name: str,
     X_va, y_va = dataset.X_val, dataset.y_val
 
     # ---- fase 1: tuning, HANYA validation ---------------------------------
-    s1_tr, s1_va = stage1(X_tr, y_tr, X_va)
+    # s1_va berasal dari SATU fit pada seluruh X_tr, memprediksi X_va -- blok
+    # terpisah, tidak bocor. s1_tr (dibuang di sini bila cross-fitted) adalah
+    # yang leaky pada versi lama: fit dan prediksi pada X_tr yang sama.
+    s1_tr_insample, s1_va = stage1(X_tr, y_tr, X_va)
+    if cross_fit_folds is None:
+        s1_tr = s1_tr_insample          # LEGACY, leaky -- hanya untuk audit
+    else:
+        s1_tr = _cross_fitted_stage1(stage1, X_tr, y_tr, cross_fit_folds)
     residual_tr = y_tr - s1_tr
     residual_va = y_va - s1_va
 
@@ -215,8 +321,15 @@ def run_arlrx(model_name: str,
                         "pred": pred, "resid_r2": resid_r2}
 
     # ---- fase 2: refit pada train+val, test disentuh sekali ----------------
+    # s1_te berasal dari SATU fit pada seluruh X_tv, memprediksi test -- blok
+    # terpisah, tidak pernah bocor. Residual yang melatih model FINAL (s1_tv)
+    # dibentuk cross-fitted dengan alasan yang sama seperti fase tuning.
     X_tv, y_tv = dataset.X_trainval, dataset.y_trainval
-    s1_tv, s1_te = stage1(X_tv, y_tv, dataset.X_test)
+    s1_tv_insample, s1_te = stage1(X_tv, y_tv, dataset.X_test)
+    if cross_fit_folds is None:
+        s1_tv = s1_tv_insample          # LEGACY, leaky -- hanya untuk audit
+    else:
+        s1_tv = _cross_fitted_stage1(stage1, X_tv, y_tv, cross_fit_folds)
     final = P.make_xgb(best["params"]).fit(X_tv, y_tv - s1_tv)
     correction_te = final.predict(dataset.X_test)
     test_pred = s1_te + best["w"] * correction_te
@@ -234,6 +347,7 @@ def run_arlrx(model_name: str,
         "scaler": "none",
         "seed": P.SEED,
         "stage1": stage1_kind,
+        "cross_fit_folds": cross_fit_folds if cross_fit_folds is not None else 0,
         "gate_w": best["w"],
         # Diagnostik utama: berapa persen RMSE validation turun berkat koreksi
         # residual bergerbang, relatif terhadap tahap pertama sendirian.
@@ -444,7 +558,8 @@ def run_arlrx_segmented(model_name: str,
                         augment_stage1: bool = False,
                         clip_nonnegative: bool = True,
                         inverse_transform: Optional[Callable] = None,
-                        extra: Optional[Dict] = None) -> Dict:
+                        extra: Optional[Dict] = None,
+                        cross_fit_folds: Optional[int] = N_CROSS_FIT_FOLDS) -> Dict:
     """AR-LRX dengan gerbang bergantung segmen, diseleksi lewat validasi-silang
     di dalam validation. Skema kolom identik `run_arlrx`, ditambah
     `segment_scheme`, `n_segments`, `gate_w_map`, `val_oof_RMSE`.
@@ -455,13 +570,16 @@ def run_arlrx_segmented(model_name: str,
     mempelajari besaran koreksi yang bergantung fitur secara kontinu -- gerbang
     terpelajar yang secara ketat lebih umum daripada w(s).
 
-    Catatan kejujuran: S1 pada blok fit adalah nilai in-sample, konvensi yang
-    sama sudah dipakai `run_arlrx` saat membentuk residual. Untuk penaksir
-    struktural nilai itu sedikit optimistis (rata-rata kelompok memuat titiknya
-    sendiri, bobot ~1/n_kelompok). Konsekuensinya harus disebut di naskah.
+    (R1-1) S1 pada blok fit, dipakai untuk membentuk residual DAN sebagai fitur
+    augmentasi, adalah cross-fitted -- bukan lagi in-sample seperti versi lama.
+    Ini menutup persis jalur kebocoran yang disebut reviewer untuk varian Aug:
+    "the augmented variant then also supplies that [in-sample] prediction to
+    XGBoost". `cross_fit_folds=None` mereproduksi perilaku lama (leaky), hanya
+    untuk audit -- lihat `run_arlrx` dan `_cross_fitted_stage1`.
 
-    Dengan `schemes=("global",)` dan `augment_stage1=False`, fungsi ini
-    mereproduksi gerbang skalar `run_arlrx` persis.
+    Dengan `schemes=("global",)`, `augment_stage1=False`, fungsi ini
+    mereproduksi gerbang skalar `run_arlrx` persis (termasuk pilihan
+    `cross_fit_folds`).
     """
     t0 = time.time()
     grid = P.param_grid_list(param_grid) if param_grid else [{}]
@@ -472,7 +590,14 @@ def run_arlrx_segmented(model_name: str,
     X_tr, y_tr = dataset.X_train, dataset.y_train
     X_va, y_va = dataset.X_val, dataset.y_val
 
-    s1_tr, s1_va = stage1(X_tr, y_tr, X_va)
+    # s1_va: satu fit pada X_tr, memprediksi X_va -- blok terpisah, tidak bocor.
+    # s1_tr: dipakai membentuk residual_tr DAN (bila augment_stage1) sebagai
+    # fitur -- cross-fitted di sini persis seperti pada run_arlrx.
+    s1_tr_insample, s1_va = stage1(X_tr, y_tr, X_va)
+    if cross_fit_folds is None:
+        s1_tr = s1_tr_insample          # LEGACY, leaky -- hanya untuk audit
+    else:
+        s1_tr = _cross_fitted_stage1(stage1, X_tr, y_tr, cross_fit_folds)
     residual_tr = y_tr - s1_tr
     s1_va_clipped = np.maximum(s1_va, 0.0) if clip_nonnegative else s1_va
     stage1_val_rmse = float(np.sqrt(np.mean((y_va - s1_va_clipped) ** 2)))
@@ -523,8 +648,15 @@ def run_arlrx_segmented(model_name: str,
                         "val_rmse": float(np.sqrt(np.mean((y_va - pred) ** 2)))}
 
     # ---- refit train+val, test disentuh sekali -----------------------------
+    # s1_te: satu fit pada X_tv, memprediksi test -- blok terpisah, tidak bocor.
+    # s1_tv: melatih model FINAL dan (bila augment_stage1) fitur augmentasi
+    # finalnya -- cross-fitted dengan alasan sama seperti fase tuning.
     X_tv, y_tv = dataset.X_trainval, dataset.y_trainval
-    s1_tv, s1_te = stage1(X_tv, y_tv, dataset.X_test)
+    s1_tv_insample, s1_te = stage1(X_tv, y_tv, dataset.X_test)
+    if cross_fit_folds is None:
+        s1_tv = s1_tv_insample          # LEGACY, leaky -- hanya untuk audit
+    else:
+        s1_tv = _cross_fitted_stage1(stage1, X_tv, y_tv, cross_fit_folds)
     if augment_stage1:
         X_tv_s2 = np.hstack([X_tv, s1_tv.reshape(-1, 1)])
         X_te_s2 = np.hstack([dataset.X_test, s1_te.reshape(-1, 1)])
@@ -546,6 +678,7 @@ def run_arlrx_segmented(model_name: str,
         "scaler": "none",
         "seed": P.SEED,
         "stage1": stage1_kind,
+        "cross_fit_folds": cross_fit_folds if cross_fit_folds is not None else 0,
         "augment_stage1": bool(augment_stage1),
         "segment_scheme": best["scheme"],
         "n_segments": len(best["w_map"]),
