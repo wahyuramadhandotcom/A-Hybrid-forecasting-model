@@ -184,3 +184,46 @@ python tools/crossfit_audit_rossmann.py    # V3 by default; --variants for V1/V2
 
 They write `results/exp05c_crossfit_audit_summary.csv` and
 `results/rossmann_crossfit_audit.csv`.
+
+## 9. Round-2 analyses added after the cross-fitted rerun
+
+All three are scripts rather than notebooks, run from the repository root. Each
+checkpoints its progress and can be resumed by running the same command again.
+
+| Script | Reviewer point | What it adds | Runtime |
+|---|---|---|---|
+| `tools/groupB_inference.py` | R1-4, R2-5 | Dependence-aware tests for the retail panel (DM on date-aggregated loss differentials with a Newey-West variance; date-block, store-cluster and two-way bootstrap intervals); Benjamini-Hochberg control, per-configuration block-bootstrap intervals and category-clustered pooled intervals for the pharmaceutical series. Reads saved predictions only. | < 1 min |
+| `tools/exp07_rolling_origin.py` | R1-6, R2-1, R2-4 | The tree-based part of the study over four forecast origins and over five seeds, under the same protocol; records the residual R² on the test block next to the validation diagnostic. | ~6-7 h in four parts |
+| `tools/exp08_learner_stability.py` | R2-2 | The regime diagnostic recomputed with six residual learners (XGBoost, LightGBM, random forest, kNN, ridge, MLP) over hyperparameter ranges. | ~2 h in two parts |
+
+```
+python tools/groupB_inference.py
+python tools/exp07_rolling_origin.py --part pharma-origins
+python tools/exp07_rolling_origin.py --part pharma-seeds
+python tools/exp07_rolling_origin.py --part rossmann-origins
+python tools/exp07_rolling_origin.py --part rossmann-seeds
+python tools/exp07_rolling_origin.py --part summary
+python tools/exp08_learner_stability.py --part pharma
+python tools/exp08_learner_stability.py --part rossmann
+python tools/exp08_learner_stability.py --part summary
+```
+
+Every script accepts `--quick` (a smoke test on a subset that writes to
+`results/_exp0x_quick/` and leaves the real result files untouched).
+
+**Duplicate pharmaceutical configurations.** When the lag count selected on the
+training block is 1, the `B_rich` feature set degenerates to `A_lag1` and the two
+configurations are the same model. In the primary split this happens for 12 of the
+16 category x granularity pairs, so the 32 configurations contain 20 distinct
+ones. `groupB_inference.py` and `exp08` report the distinct set explicitly.
+
+**LightGBM baseline fix.** `fp_lightgbm` originally passed `subsample=0.8`
+without `subsample_freq`; LightGBM ignores row subsampling while that frequency
+is 0, so the submitted LightGBM baseline ran without row bagging. The function now
+sets `subsample_freq=1` (the configured bagging is active); `subsample_freq=0`
+reproduces the submitted baseline. `tools/rerun_lightgbm_baseline.py` checks that
+reproduction, re-trains the baseline, writes `results/lightgbm_fix_audit.csv`, and
+replaces only the LightGBM row and prediction in the exp06b result files. Then
+re-run the exp06b notebook (reuse path), `tools/groupB_inference.py`, and
+`tools/exp07_rolling_origin.py --part rossmann-origins|rossmann-seeds --redo-model "LightGBM (Zeng)"`
+followed by `--part summary`.

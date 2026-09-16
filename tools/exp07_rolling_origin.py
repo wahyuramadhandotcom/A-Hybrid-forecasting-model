@@ -29,6 +29,9 @@ are already in its result file, so an interrupted run can be resumed):
     python tools/exp07_rolling_origin.py --part rossmann-seeds      # ~2 h
     python tools/exp07_rolling_origin.py --part summary             # seconds
 
+    --redo-model NAME [NAME ...]   discard the saved rows of these models and
+              re-run only them (used after the LightGBM bagging fix:
+              --redo-model "LightGBM (Zeng)")
     --quick   smoke test (80 stores / 2 categories, one small grid); writes to
               results/_exp07_quick/ and never touches the real files.
 
@@ -84,6 +87,7 @@ GRANS = [("daily", "data/raw/pharma-sales/salesdaily.csv", 7),
 
 class Ctx:
     quick = False
+    redo = []          # model names whose existing rows are discarded and re-run
     res = os.path.join(ROOT, "results")
 
     @classmethod
@@ -122,6 +126,12 @@ class Store:
         self.done = set()
         if os.path.exists(self.csv):
             d = pd.read_csv(self.csv)
+            if Ctx.redo and d.model.isin(Ctx.redo).any():
+                n = int(d.model.isin(Ctx.redo).sum())
+                d = d[~d.model.isin(Ctx.redo)]
+                d.to_csv(self.csv, index=False)
+                print(f"  --redo-model: removed {n} existing rows of {Ctx.redo} from "
+                      f"{os.path.basename(self.csv)}", flush=True)
             self.done = set(zip(d.group.astype(str), d.config.astype(str), d.model.astype(str)))
 
     def has(self, group, config, model):
@@ -491,7 +501,11 @@ def main():
                     choices=["rossmann-origins", "rossmann-seeds", "pharma-origins",
                              "pharma-seeds", "summary"])
     ap.add_argument("--quick", action="store_true")
+    ap.add_argument("--redo-model", nargs="+", default=[],
+                    help="discard existing rows of these models and run them again "
+                         "(e.g. after a baseline fix); other rows are kept")
     a = ap.parse_args()
+    Ctx.redo = list(a.redo_model)
     if a.quick:
         Ctx.quick = True
         Ctx.res = os.path.join(ROOT, "results", "_exp07_quick")

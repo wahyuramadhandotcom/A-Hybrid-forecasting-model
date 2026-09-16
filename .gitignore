@@ -87,3 +87,9 @@ _arsip*/
 credentials*.json
 
 README_EXPERIMENTS.md
+
+# smoke-test output of tools/exp07_*.py and tools/exp08_*.py (--quick)
+results/_exp0*_quick/
+
+# backups written by tools/rerun_lightgbm_baseline.py
+*.before_lgbm_fix

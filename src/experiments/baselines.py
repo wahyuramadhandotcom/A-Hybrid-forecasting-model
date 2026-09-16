@@ -165,13 +165,27 @@ def make_keras_fp(kind: str, epochs: int = EPOCHS, batch_size: int = BATCH_SIZE,
 # Model pohon pembanding
 # --------------------------------------------------------------------------- #
 
-def fp_lightgbm(X_fit, y_fit, X_eval, params):
+def fp_lightgbm(X_fit, y_fit, X_eval, params, subsample_freq: int = 1):
+    """LightGBM baseline (Zeng et al.).
+
+    Revision (IJIES Paper ID 20265893, round 2): LightGBM applies row
+    subsampling (`subsample`, alias bagging_fraction) only when
+    `subsample_freq` (bagging_freq) is > 0, and its default is 0. The version
+    used for the submitted manuscript passed `subsample=0.8` without a
+    frequency, so row bagging was silently inactive and only column sampling
+    took effect - the baseline was weaker than the configuration it reports.
+    `subsample_freq=1` (bagging at every iteration) makes the configured
+    subsample effective. `subsample_freq=0` reproduces the submitted baseline
+    bit for bit and is kept only for the before/after audit
+    (tools/rerun_lightgbm_baseline.py).
+    """
     import lightgbm as lgb
     m = lgb.LGBMRegressor(
         n_estimators=int(params.get("n_estimators", 300)),
         num_leaves=int(params.get("num_leaves", 31)),
         learning_rate=float(params.get("learning_rate", 0.1)),
         subsample=float(params.get("subsample", 0.8)),
+        subsample_freq=int(subsample_freq),
         colsample_bytree=float(params.get("colsample_bytree", 0.8)),
         random_state=P.SEED, n_jobs=-1, verbose=-1)
     m.fit(X_fit, y_fit)
