@@ -1,0 +1,50 @@
+,legacy,crossfit,change
+"T7 gate closed (w*=0), of N",15.0,17.0,2.0
+"T7 gate closed, daily",7.0,6.0,-1.0
+"T7 gate closed, weekly",8.0,11.0,3.0
+T7 mean selected w*,0.15312499999999998,0.13749999999999998,-0.015625
+T7 count w*=0,15.0,17.0,2.0
+T7 count w*=0.1,7.0,5.0,-2.0
+T7 count w*=0.2,4.0,5.0,1.0
+T7 count w*=0.5,2.0,,
+T7 count w*=0.6,4.0,,
+"resid_val_r2 negative, of N",30.0,31.0,1.0
+resid_val_r2 median,-0.08903071205868829,-0.10688434806849079,-0.017853636009802498
+resid_val_r2 min,-1.335266810906731,-2.446559640791663,-1.111292829884932
+resid_val_r2 max,0.00604527547646494,0.014534468722682492,0.008489193246217552
+"T8 ungated: worse than S1, of N",23.0,19.0,-4.0
+T8 ungated: mean %,1.575018166202532,1.765863429785552,0.19084526358302
+T8 ungated: worst %,8.82818426126546,11.382374690480326,2.5541904292148665
+"T8 gated: worse than S1, of N",10.0,8.0,-2.0
+T8 gated: mean %,0.20229081312035024,0.218529689133352,0.016238876013001752
+T8 gated: worst %,2.287232346572792,4.48169098749914,2.1944586409263476
+"T8 gated+aug: worse than S1, of N",8.0,5.0,-3.0
+T8 gated+aug: mean %,0.21627630125668978,0.30878661761424564,0.09251031635755586
+T8 gated+aug: worst %,4.254638299647057,14.478296107537528,10.22365780789047
+T9 vs Naive: wins,30.0,30.0,0.0
+T9 vs Naive: ties (identical),0.0,0.0,0.0
+T9 vs Naive: significant wins,22.0,22.0,0.0
+T9 vs Naive: significant losses,0.0,0.0,0.0
+T9 vs S1 [linear]: wins,7.0,7.0,0.0
+T9 vs S1 [linear]: ties (identical),15.0,17.0,2.0
+T9 vs S1 [linear]: significant wins,0.0,0.0,0.0
+T9 vs S1 [linear]: significant losses,2.0,2.0,0.0
+T9 vs XGBoost: wins,24.0,25.0,1.0
+T9 vs XGBoost: ties (identical),0.0,0.0,0.0
+T9 vs XGBoost: significant wins,4.0,4.0,0.0
+T9 vs XGBoost: significant losses,0.0,0.0,0.0
+"T9 vs LR-XGB (residual, tanpa gerbang): wins",22.0,21.0,-1.0
+"T9 vs LR-XGB (residual, tanpa gerbang): ties (identical)",0.0,0.0,0.0
+"T9 vs LR-XGB (residual, tanpa gerbang): significant wins",5.0,5.0,0.0
+"T9 vs LR-XGB (residual, tanpa gerbang): significant losses",0.0,0.0,0.0
+DM tests defined (non-NaN p),113.0,111.0,-2.0
+S4.4 augmentation effect: mean %,0.030289416887135344,0.07810429233138824,0.0478148754442529
+"S4.4 augmentation improves, of N",2.0,14.0,12.0
+S4.5 Pearson r (val gain vs test gain),-0.8339821924724944,-0.9036742981205398,-0.0696921056480454
+S4.5 Spearman rho,-0.39263803680981596,-0.17997410444540357,0.2126639323644124
+S4.5 open gates: mean val gain %,0.4055529411764706,0.50198,0.09642705882352937
+S4.5 open gates: mean test gain %,-0.380782707050071,-0.46619667015115085,-0.08541396310107985
+S4.5 open gates: improved on test,7.0,7.0,0.0
+N configurations,32.0,32.0,0.0
+T7 count w*=0.4,,2.0,
+T7 count w*=0.7,,3.0,
