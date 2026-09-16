@@ -1,0 +1,97 @@
+{
+  "B": 2000,
+  "seed": 42,
+  "rossmann_proposed": "AR-LRX-Aug [structural]",
+  "pharma_valid_tests": 111,
+  "pharma_undefined_tests": 17,
+  "pharma_duplicate_configs": 12,
+  "pharma_valid_tests_distinct": 69,
+  "Naive": {
+    "sig_win_raw": 22,
+    "sig_win_BH_all": 20,
+    "sig_win_BH_within": 22,
+    "sig_loss_raw": 0,
+    "sig_loss_BH_all": 0,
+    "sig_loss_BH_within": 0,
+    "ci_excludes_zero_better": 22,
+    "ci_excludes_zero_worse": 0,
+    "distinct": {
+      "n_configs": 20,
+      "wins": 19,
+      "ties": 0,
+      "valid_tests": 20,
+      "sig_win_raw": 15,
+      "sig_win_BH_distinct": 13,
+      "sig_loss_raw": 0,
+      "sig_loss_BH_distinct": 0,
+      "ci_excludes_zero_better": 15,
+      "ci_excludes_zero_worse": 0
+    }
+  },
+  "S1 [linear]": {
+    "sig_win_raw": 0,
+    "sig_win_BH_all": 0,
+    "sig_win_BH_within": 0,
+    "sig_loss_raw": 2,
+    "sig_loss_BH_all": 0,
+    "sig_loss_BH_within": 0,
+    "ci_excludes_zero_better": 0,
+    "ci_excludes_zero_worse": 1,
+    "distinct": {
+      "n_configs": 20,
+      "wins": 4,
+      "ties": 11,
+      "valid_tests": 9,
+      "sig_win_raw": 0,
+      "sig_win_BH_distinct": 0,
+      "sig_loss_raw": 1,
+      "sig_loss_BH_distinct": 0,
+      "ci_excludes_zero_better": 0,
+      "ci_excludes_zero_worse": 0
+    }
+  },
+  "XGBoost": {
+    "sig_win_raw": 4,
+    "sig_win_BH_all": 2,
+    "sig_win_BH_within": 2,
+    "sig_loss_raw": 0,
+    "sig_loss_BH_all": 0,
+    "sig_loss_BH_within": 0,
+    "ci_excludes_zero_better": 4,
+    "ci_excludes_zero_worse": 1,
+    "distinct": {
+      "n_configs": 20,
+      "wins": 15,
+      "ties": 0,
+      "valid_tests": 20,
+      "sig_win_raw": 2,
+      "sig_win_BH_distinct": 1,
+      "sig_loss_raw": 0,
+      "sig_loss_BH_distinct": 0,
+      "ci_excludes_zero_better": 2,
+      "ci_excludes_zero_worse": 1
+    }
+  },
+  "LR-XGB (residual, tanpa gerbang)": {
+    "sig_win_raw": 5,
+    "sig_win_BH_all": 2,
+    "sig_win_BH_within": 2,
+    "sig_loss_raw": 0,
+    "sig_loss_BH_all": 0,
+    "sig_loss_BH_within": 0,
+    "ci_excludes_zero_better": 6,
+    "ci_excludes_zero_worse": 0,
+    "distinct": {
+      "n_configs": 20,
+      "wins": 13,
+      "ties": 0,
+      "valid_tests": 20,
+      "sig_win_raw": 3,
+      "sig_win_BH_distinct": 1,
+      "sig_loss_raw": 0,
+      "sig_loss_BH_distinct": 0,
+      "ci_excludes_zero_better": 4,
+      "ci_excludes_zero_worse": 0
+    }
+  }
+}
