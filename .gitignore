@@ -93,3 +93,6 @@ results/_exp0*_quick/
 
 # backups written by tools/rerun_lightgbm_baseline.py
 *.before_lgbm_fix
+
+# round-2 manuscript files (under review, not published)
+_revision_r2/
