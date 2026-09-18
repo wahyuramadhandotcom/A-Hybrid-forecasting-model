@@ -10,13 +10,17 @@ protocol-controlled evaluation behind
 Every model in the study, including eight baselines drawn from published work, is trained
 and evaluated under one experimental contract. Nothing is quoted from another paper.
 
-> **Revision in progress (15 September 2026).** In response to reviewer comment R1-1, the
-> residuals that train the second stage are now formed from **cross-fitted** first-stage
-> predictions (five chronological folds inside the block being fitted) instead of
-> in-sample predictions. The code on this branch implements the revised procedure; the
-> files in `results/` and the tables below still describe the submitted, in-sample
-> procedure until the affected notebooks have been re-run. Section 8 of
-> [REPRODUCE.md](REPRODUCE.md) lists what changed and what has to be re-run.
+> **Second-round revision (17 September 2026).** In response to reviewer comment R1-1, the
+> residuals that train the second stage are formed from **cross-fitted** first-stage
+> predictions (five chronological folds inside the block being fitted) instead of in-sample
+> predictions, and every affected experiment has been re-run: `results/`, the tables below
+> and the revised manuscript all describe the cross-fitted procedure. The LightGBM baseline
+> now sets a bagging frequency of one, so that the row subsampling in its grid takes effect.
+> The revision also adds dependence-aware and multiplicity-aware inference
+> (`tools/groupB_inference.py`), rolling-origin and multi-seed replications
+> (`tools/exp07_rolling_origin.py`) and a learner-stability study
+> (`tools/exp08_learner_stability.py`). Sections 8 and 9 of
+> [REPRODUCE.md](REPRODUCE.md) list what changed and how to re-run it.
 
 ## Repository Structure
 
@@ -130,25 +134,28 @@ Rossmann `V3`, original scale, single held-out block (13 Mar – 31 Jul 2015):
 
 | Rank | Model | Source | RMSE | MAE | RMSPE | R² |
 |---|---|---|---|---|---|---|
-| 1 | **AR-LRX**, augmented, structural S₁ | this work | **945.42** | 645.64 | 0.1200 | **0.9084** |
-| 2 | AR-LRX, augmented, struct-linear S₁ | this work | 956.27 | 652.97 | 0.1213 | 0.9063 |
-| 3 | AR-LRX, gated, struct-linear S₁ | this work | 1004.69 | 690.89 | 0.1273 | 0.8966 |
-| 4 | XGBoost | Zhaoweijie et al. | 1014.27 | 692.14 | 0.1323 | 0.8946 |
-| 5 | LightGBM | Zeng et al. | 1015.73 | 697.14 | 0.1324 | 0.8943 |
-| 7 | Residual hybrid, ungated | earlier study | 1058.82 | 704.84 | 0.1341 | 0.8851 |
+| 1 | **AR-LRX**, augmented, structural S₁ | this work | **954.90** | 650.54 | 0.1200 | **0.9066** |
+| 2 | AR-LRX, augmented, struct-linear S₁ | this work | 961.34 | 656.26 | 0.1215 | 0.9053 |
+| 3 | AR-LRX, gated, struct-linear S₁ | this work | 998.15 | 685.70 | 0.1267 | 0.8979 |
+| 4 | LightGBM | Zeng et al. | 1009.99 | 692.49 | 0.1318 | 0.8955 |
+| 5 | XGBoost | Zhaoweijie et al. | 1014.27 | 692.14 | 0.1323 | 0.8946 |
+| 7 | Residual hybrid, ungated | earlier study | 1061.50 | 705.90 | 0.1342 | 0.8846 |
 | 12 | Seasonal naive | — | 1274.63 | 850.47 | 0.1570 | 0.8335 |
 
 No retrained baseline outperforms AR-LRX. All eight Diebold–Mariano comparisons favour it
 and are significant at the 5% level **on both the log and the original scale**, with the
-sign agreeing across scales.
+sign agreeing across scales. They remain significant under dependence-aware inference:
+the loss differential aggregated by calendar date with a Newey–West variance, and a 95%
+bootstrap interval that resamples stores and 7-day date blocks jointly
+(`results/groupB_rossmann_dependence.csv`).
 
 PharmaSales, 32 configurations:
 
 | Framework | Worse than S₁ | Mean change | Worst case |
 |---|---|---|---|
-| Ungated residual hybrid | 23 of 32 | +1.575% | +8.828% |
-| **AR-LRX, gated** | **10 of 32** | **+0.202%** | **+2.287%** |
-| AR-LRX, gated and augmented | 8 of 32 | +0.216% | +4.255% |
+| Ungated residual hybrid | 19 of 32 | +1.766% | +11.382% |
+| **AR-LRX, gated** | **8 of 32** | **+0.219%** | **+4.482%** |
+| AR-LRX, gated and augmented | 5 of 32 | +0.309% | +14.478% |
 
 > **On the earlier figures.** A previous version of this README reported Rossmann
 > RMSE = 577.63, R² = 0.9651. That configuration used `Customers` contemporaneously and
@@ -192,11 +199,13 @@ is retrained, so the figures cannot drift from the reported numbers.
 
 The decisive factor is the alignment of the first stage with the structure of the data,
 not the capacity of the second stage. Replacing a linear first stage with a hierarchical
-estimator turned a hybrid that was *worse* than plain gradient boosting (1058.82 vs 1017.83)
-into one that beats every retrained baseline (945.42). The gate contributes little accuracy
-where correction is warranted and prevents substantial degradation where it is not — on
-PharmaSales it closes completely in 15 of 32 configurations, reducing AR-LRX to ordinary
-linear regression, which on those series is the correct thing to do.
+estimator turned a hybrid that was *worse* than plain gradient boosting (1061.50 vs 1017.83)
+into one that beats every retrained baseline (954.90). The gate contributes little accuracy
+where correction is warranted and reduces degradation where it is not — on PharmaSales it
+closes completely in 17 of 32 configurations, reducing AR-LRX to ordinary linear
+regression, which on those series is the correct thing to do. Across four forecast origins
+and five seeds an augmented AR-LRX variant remains the most accurate model on the retail
+panel (`results/exp07_summary_rossmann_*.csv`).
 
 ## Reproduction
 

@@ -37,17 +37,21 @@ if the weaker pass is also in the repository.
 
 ## 2. Where each paper artefact comes from
 
-| Paper artefact | Notebook | Result file |
+| Paper artefact | Notebook or script | Result file |
 |---|---|---|
 | Table 1 — datasets and splits | `exp05b`, `exp05c` | `*.meta.json` |
 | Table 2 — component ablation | `exp05b`, `exp05d` | `exp05b_..._ablation_full.csv`, `exp05d_rossmann_arlrx_dev.csv` |
 | Table 3 — all models, unified protocol | `exp06b`, `exp05d` | `exp06b_..._table_utama.csv` |
-| Table 4 — Diebold–Mariano tests | `exp06b` | `exp06b_..._dm.csv` |
-| Table 5 — effect of correcting baseline training | `exp06` → `exp06b` | `exp06b_..._exp06_vs_exp06b.csv` |
+| Table 4 — dependence-aware inference | `tools/groupB_inference.py` | `groupB_rossmann_dependence.csv` |
+| Table 5 — effect of correcting baseline training | `exp06` → `exp06b` | `exp06b_..._exp06_vs_exp06b.csv`, `lightgbm_fix_audit.csv` |
 | Table 6 — test RMSE by segment | `exp05d` | `exp05d_..._segments.csv` |
-| Table 7 — selected gate weight | `exp05c` | `exp05c_pharma_arlrx_gate.csv` |
-| Table 8 — degradation vs the first stage | `exp05c` | `exp05c_..._comparison.csv`, `exp05c_..._gate.csv` |
-| Table 9 — accuracy vs four references | `exp05c` | `exp05c_..._comparison.csv`, `exp05c_..._dm.csv` |
+| Table 7 — retail rolling origins and seeds | `tools/exp07_rolling_origin.py` | `exp07_summary_rossmann_origins.csv`, `exp07_summary_rossmann_seeds.csv` |
+| Table 8 — selected gate weight | `exp05c` | `exp05c_pharma_arlrx_gate.csv` |
+| Table 9 — degradation vs the first stage | `exp05c` | `exp05c_..._comparison.csv`, `exp05c_..._gate.csv` |
+| Table 10 — accuracy vs four references | `exp05c`, `tools/groupB_inference.py` | `exp05c_..._comparison.csv`, `exp05c_..._dm.csv`, `groupB_pharma_tests_bh.csv`, `groupB_pharma_pooled.csv` |
+| Table 11 — pharmaceutical origins and seeds | `tools/exp07_rolling_origin.py` | `exp07_summary_pharma_origins.csv`, `exp07_summary_pharma_seeds.csv` |
+| Section 4.6 — learner stability | `tools/exp08_learner_stability.py` | `exp08_learner_stability.csv`, `exp08_summary.csv` |
+| Section 2.3 — size of the in-sample residual leak | `tools/leak_size_audit.py` | `crossfit_leak_size.csv` |
 | Figure 1 — framework diagram | drawn by hand | `paper/figures/fig1_framework.png` |
 | Figure 2 — gate sensitivity curve | `figures_paper` | `exp05b_..._gate_curve.csv` |
 | Figure 3 — regime diagnostic | `figures_paper` | `exp05b_..._audit.csv`, `exp05d_..._dev.csv`, `exp05c_..._gate.csv` |
@@ -169,9 +173,14 @@ tracked by git (`*.npz`), so that file must come from the original run; set the 
 `False` to retrain instead (19 h). Every notebook that forms residuals refuses to start
 with a pre-revision `arlrx.py` / `protocol.py`.
 
-**Not re-run.** `exp01`–`exp04` and `exp06` belong to the earlier study or to Table 5,
+**Not re-run.** `exp01`-`exp04` and `exp06` belong to the earlier study or to Table 5,
 which compares baselines only. Their archived `LR-XGB (residual)` rows were produced with
-in-sample residuals and are reproduced with `cross_fit_folds=None`.
+in-sample residuals, and their archived LightGBM rows without row bagging. Those notebooks
+still call `P.fp_lr_xgb_residual` and `B.fp_lightgbm` with the library defaults, which are
+now the cross-fitted residual and `subsample_freq=1`, so **running them unchanged today
+does not reproduce the archived rows**. To reproduce them, pass the legacy settings
+explicitly: `P.fp_lr_xgb_residual(..., cross_fit_folds=None)` and
+`B.fp_lightgbm(..., subsample_freq=0)`. Every other row of those notebooks is unaffected.
 
 **Before/after audit.** Both tools run the in-sample and the cross-fitted procedure in
 the same environment, because the platform difference described in Section 7 would
