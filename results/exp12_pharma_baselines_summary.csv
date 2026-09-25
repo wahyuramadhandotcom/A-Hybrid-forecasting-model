@@ -1,0 +1,29 @@
+reference,granularity,scope,n,arlrx_wins,sig_wins_bh,sig_losses_bh,pooled_pct
+"ARIMA(5,1,0) multi-step",daily,all,16,10,6,2,-5.537367831743212
+"ARIMA(5,1,0) multi-step",daily,distinct,10,6,4,1,-5.065864028510292
+"ARIMA(5,1,0) multi-step",weekly,all,16,10,6,0,-19.582984077852117
+"ARIMA(5,1,0) multi-step",weekly,distinct,10,6,3,0,-15.534029958351702
+"ARIMA(5,1,0) rolling 1-step",daily,all,16,7,2,0,0.9955025827100394
+"ARIMA(5,1,0) rolling 1-step",daily,distinct,10,5,2,0,0.4295064066576204
+"ARIMA(5,1,0) rolling 1-step",weekly,all,16,11,0,0,-1.3445397230601897
+"ARIMA(5,1,0) rolling 1-step",weekly,distinct,10,7,0,0,-1.8609666751630116
+LSTM,daily,all,16,8,6,0,-0.5664459103940533
+LSTM,daily,distinct,10,5,4,0,-0.682273722700133
+LSTM,weekly,all,16,9,2,0,-2.416409288841237
+LSTM,weekly,distinct,10,5,1,0,-1.466996821592892
+Naive,daily,all,16,16,16,0,-22.647530213293187
+Naive,daily,distinct,10,10,10,0,-23.33885843069572
+Naive,weekly,all,16,14,6,0,-10.268968772237086
+Naive,weekly,distinct,10,9,5,0,-12.944047259180202
+Random Forest,daily,all,16,15,0,0,-1.559570367393126
+Random Forest,daily,distinct,10,9,0,0,-1.38535963492874
+Random Forest,weekly,all,16,11,0,0,-1.2049617294290549
+Random Forest,weekly,distinct,10,7,0,0,-1.186577813027112
+S1 [linear],daily,all,16,3,0,0,0.2252482773130282
+S1 [linear],daily,distinct,10,2,0,0,0.1796288218170794
+S1 [linear],weekly,all,16,4,0,0,0.20468597179987835
+S1 [linear],weekly,distinct,10,2,0,0,0.3835233170590646
+XGBoost,daily,all,16,12,2,0,-0.5533586075240016
+XGBoost,daily,distinct,10,7,1,0,-0.5395200482203988
+XGBoost,weekly,all,16,13,0,0,-2.6928210758386917
+XGBoost,weekly,distinct,10,8,0,0,-2.4518931782605002
