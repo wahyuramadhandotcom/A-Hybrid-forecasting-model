@@ -1,0 +1,65 @@
+model,reference,granularity,scope,n,wins,ties(|d|<0.1%),sig_wins_bh,sig_losses_bh,pooled_pct,median_pct
+AR-LRX [linear+cal],S1 [linear+cal],daily,all,16,5,6,0,0,0.11347138071775564,0.0
+AR-LRX [linear+cal],S1 [linear+cal],daily,distinct,10,3,4,0,0,0.099251912230236,0.0
+AR-LRX [linear+cal],S1 [linear+cal],weekly,all,16,6,6,0,0,0.1056435035305725,0.0
+AR-LRX [linear+cal],S1 [linear+cal],weekly,distinct,10,4,3,0,0,0.2528233823076098,0.0
+AR-LRX [linear+cal],S1 [linear] (exp05c),daily,all,16,14,0,3,0,-2.522403601030432,-1.3039036494662481
+AR-LRX [linear+cal],S1 [linear] (exp05c),daily,distinct,10,9,0,2,0,-2.3462788104657406,-1.3039036494662481
+AR-LRX [linear+cal],S1 [linear] (exp05c),weekly,all,16,6,0,0,0,1.0129080373934007,1.8319062418009624
+AR-LRX [linear+cal],S1 [linear] (exp05c),weekly,distinct,10,4,0,0,0,0.9481093594708723,1.8319062418009624
+AR-LRX [struct_linear],S1 [linear+cal],daily,all,16,3,3,0,0,1.1262565253454149,0.7837501411855574
+AR-LRX [struct_linear],S1 [linear+cal],daily,distinct,10,2,2,0,0,1.036500244453098,0.7837501411855574
+AR-LRX [struct_linear],S1 [linear+cal],weekly,all,16,6,6,0,0,0.105643503531061,4.662936703425657e-13
+AR-LRX [struct_linear],S1 [linear+cal],weekly,distinct,10,4,3,0,0,0.2528233823079873,4.662936703425657e-13
+AR-LRX [struct_linear],S1 [linear] (exp05c),daily,all,16,10,1,2,0,-1.5362839489463043,-0.4684972539262866
+AR-LRX [struct_linear],S1 [linear] (exp05c),daily,distinct,10,7,1,1,0,-1.4319284474830218,-0.4684972539262866
+AR-LRX [struct_linear],S1 [linear] (exp05c),weekly,all,16,6,0,0,0,1.0129080373938892,1.8319062418003407
+AR-LRX [struct_linear],S1 [linear] (exp05c),weekly,distinct,10,4,0,0,0,0.9481093594712497,1.8319062418003407
+AR-LRX-Aug [struct_linear],S1 [linear+cal],daily,all,16,4,1,0,2,0.6324577854591285,0.37389031799495154
+AR-LRX-Aug [struct_linear],S1 [linear+cal],daily,distinct,10,3,1,0,1,0.4666288080765968,0.2820753595989989
+AR-LRX-Aug [struct_linear],S1 [linear+cal],weekly,all,16,6,13,0,0,-0.5132618518982279,0.0
+AR-LRX-Aug [struct_linear],S1 [linear+cal],weekly,distinct,10,4,8,0,0,-0.43290400382136607,0.0
+AR-LRX-Aug [struct_linear],S1 [linear] (exp05c),daily,all,16,14,0,1,0,-2.017081523988995,-1.337255745756566
+AR-LRX-Aug [struct_linear],S1 [linear] (exp05c),daily,distinct,10,9,0,1,0,-1.9878773212127165,-1.337255745756566
+AR-LRX-Aug [struct_linear],S1 [linear] (exp05c),weekly,all,16,6,0,0,0,0.3883934989141302,1.0989652879489942
+AR-LRX-Aug [struct_linear],S1 [linear] (exp05c),weekly,distinct,10,4,0,0,0,0.257626230614183,0.7198034852081481
+Naive,S1 [linear+cal],daily,all,16,0,0,0,16,33.07321967422394,32.423881289912224
+Naive,S1 [linear+cal],daily,distinct,10,0,0,0,10,33.95106497494744,32.423881289912224
+Naive,S1 [linear+cal],weekly,all,16,2,0,0,4,10.669273786877941,10.687100328084798
+Naive,S1 [linear+cal],weekly,distinct,10,1,0,0,4,14.515001927455984,13.110940088068968
+Naive,S1 [linear] (exp05c),daily,all,16,0,0,0,16,29.56955162992991,30.448644394930035
+Naive,S1 [linear] (exp05c),daily,distinct,10,0,0,0,10,30.678498612300587,30.448644394930035
+Naive,S1 [linear] (exp05c),weekly,all,16,2,0,0,6,11.672277249831042,8.544494230168754
+Naive,S1 [linear] (exp05c),weekly,distinct,10,1,0,0,5,15.309200757262055,14.356199100678191
+S1 [linear+cal],S1 [linear] (exp05c),daily,all,16,14,1,3,0,-2.632887408053519,-1.6121932699830643
+S1 [linear+cal],S1 [linear] (exp05c),daily,distinct,10,9,1,2,0,-2.443105893378994,-1.6121932699830643
+S1 [linear+cal],S1 [linear] (exp05c),weekly,all,16,6,0,0,0,0.9063070793114969,1.0989652879477285
+S1 [linear+cal],S1 [linear] (exp05c),weekly,distinct,10,4,0,0,0,0.6935325646758361,0.7198034852075264
+S1 [linear] (exp05c),S1 [linear+cal],daily,all,16,2,1,0,3,2.704082865317803,1.6398608837632334
+S1 [linear] (exp05c),S1 [linear+cal],daily,distinct,10,1,1,0,2,2.5042883086344503,1.6398608837632334
+S1 [linear] (exp05c),S1 [linear+cal],weekly,all,16,10,0,0,0,-0.8981669288512961,-1.0870193229156055
+S1 [linear] (exp05c),S1 [linear+cal],weekly,distinct,10,6,0,0,0,-0.6887558187814835,-0.7132522885506698
+S1 [struct_linear],S1 [linear+cal],daily,all,16,5,3,0,2,0.9728724188148963,0.4210711191970473
+S1 [struct_linear],S1 [linear+cal],daily,distinct,10,3,2,0,1,0.9391097157851469,0.4210711191970473
+S1 [struct_linear],S1 [linear+cal],weekly,all,16,4,16,0,0,4.662936703425657e-13,4.662936703425657e-13
+S1 [struct_linear],S1 [linear+cal],weekly,distinct,10,3,10,0,0,3.774758283725532e-13,0.0
+S1 [struct_linear],S1 [linear] (exp05c),daily,all,16,11,0,2,0,-1.6856296246500202,-0.4279613176262187
+S1 [struct_linear],S1 [linear] (exp05c),daily,distinct,10,7,0,1,0,-1.5269396224054765,-0.4279613176262187
+S1 [struct_linear],S1 [linear] (exp05c),weekly,all,16,6,0,0,0,0.9063070793119854,1.0989652879489942
+S1 [struct_linear],S1 [linear] (exp05c),weekly,distinct,10,4,0,0,0,0.6935325646762136,0.7198034852081481
+S1 [structural],S1 [linear+cal],daily,all,16,3,2,0,3,2.1980324600595402,1.7604187737158883
+S1 [structural],S1 [linear+cal],daily,distinct,10,2,2,0,2,2.1349875260403772,1.7604187737158883
+S1 [structural],S1 [linear+cal],weekly,all,16,1,0,0,4,11.396078407743836,11.417509668971405
+S1 [structural],S1 [linear+cal],weekly,distinct,10,1,0,0,2,9.074340119806589,7.780466945682175
+S1 [structural],S1 [linear] (exp05c),daily,all,16,9,1,0,2,-0.492726667859833,-0.10346940414365235
+S1 [structural],S1 [linear] (exp05c),daily,distinct,10,6,1,0,1,-0.3602783734102055,-0.10346940414365235
+S1 [structural],S1 [linear] (exp05c),weekly,all,16,2,0,0,2,12.405668952428606,15.225602485696697
+S1 [structural],S1 [linear] (exp05c),weekly,distinct,10,2,0,0,1,9.830806188242725,8.317469293895307
+XGBoost [+cal],S1 [linear+cal],daily,all,16,5,2,0,0,0.6528646621775547,0.39389836407262013
+XGBoost [+cal],S1 [linear+cal],daily,distinct,10,3,1,0,0,0.5762615702681106,0.39389836407262013
+XGBoost [+cal],S1 [linear+cal],weekly,all,16,4,0,0,0,2.5677776723756374,3.0228073239084496
+XGBoost [+cal],S1 [linear+cal],weekly,distinct,10,2,0,0,0,2.915744064359038,3.0228073239084496
+XGBoost [+cal],S1 [linear] (exp05c),daily,all,16,13,0,0,0,-1.9972119373580677,-1.0315052305534311
+XGBoost [+cal],S1 [linear] (exp05c),daily,distinct,10,8,0,0,0,-1.8809230034953717,-0.992986738208379
+XGBoost [+cal],S1 [linear] (exp05c),weekly,all,16,5,0,0,0,3.497356702512877,3.204736332029323
+XGBoost [+cal],S1 [linear] (exp05c),weekly,distinct,10,3,0,0,0,3.6294982636238204,3.204736332029323
