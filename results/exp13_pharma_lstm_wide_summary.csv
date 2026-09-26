@@ -1,0 +1,9 @@
+reference,granularity,scope,n,arlrx_wins,sig_wins_bh,sig_losses_bh,pooled_pct
+LSTM (wide grid),daily,all,16,6,6,0,-0.5383986188176815
+LSTM (wide grid),daily,distinct,10,4,4,0,-0.6494787737539975
+LSTM (wide grid),weekly,all,16,11,2,0,-2.1543168384492106
+LSTM (wide grid),weekly,distinct,10,6,1,0,-1.3756600421574783
+S1 [linear],daily,all,16,3,0,0,0.2252482773130282
+S1 [linear],daily,distinct,10,2,0,0,0.1796288218170794
+S1 [linear],weekly,all,16,4,0,0,0.20468597179987835
+S1 [linear],weekly,distinct,10,2,0,0,0.3835233170590646

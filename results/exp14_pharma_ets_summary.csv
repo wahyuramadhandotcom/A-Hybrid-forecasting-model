@@ -1,0 +1,13 @@
+reference,granularity,scope,n,arlrx_wins,sig_wins_bh,sig_losses_bh,pooled_pct
+"ARIMA(5,1,0) rolling 1-step",daily,all,16,7,2,0,0.9955025827100394
+"ARIMA(5,1,0) rolling 1-step",daily,distinct,10,5,2,0,0.4295064066576204
+"ARIMA(5,1,0) rolling 1-step",weekly,all,16,11,0,0,-1.3445397230601897
+"ARIMA(5,1,0) rolling 1-step",weekly,distinct,10,7,0,0,-1.8609666751630116
+ETS rolling 1-step,daily,all,16,1,0,12,6.118391990900474
+ETS rolling 1-step,daily,distinct,10,1,0,6,4.911491005534829
+ETS rolling 1-step,weekly,all,16,11,0,2,1.1527159017360011
+ETS rolling 1-step,weekly,distinct,10,7,0,1,0.6876205121478796
+S1 [linear],daily,all,16,3,0,0,0.2252482773130282
+S1 [linear],daily,distinct,10,2,0,0,0.1796288218170794
+S1 [linear],weekly,all,16,4,0,0,0.20468597179987835
+S1 [linear],weekly,distinct,10,2,0,0,0.3835233170590646
