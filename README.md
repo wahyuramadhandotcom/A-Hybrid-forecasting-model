@@ -27,6 +27,8 @@ and evaluated under one experimental contract. Nothing is quoted from another pa
 **Top-level folders and files:**
 - `data/` — Raw datasets and data documentation
 - `notebooks/` — Experiment, benchmark and figure notebooks
+- `notebooks/laporan/` — Report notebooks (Indonesian): read-only walkthroughs that explain
+  each experiment and check its numbers against the dissertation
 - `paper/figures/` — The five figures of the manuscript, at publication resolution
 - `results/` — Machine-readable result files, one set per experiment
 - `src/` — Shared utility functions and helpers
@@ -206,6 +208,46 @@ closes completely in 17 of 32 configurations, reducing AR-LRX to ordinary linear
 regression, which on those series is the correct thing to do. Across four forecast origins
 and five seeds an augmented AR-LRX variant remains the most accurate model on the retail
 panel (`results/exp07_summary_rossmann_*.csv`).
+
+## Report Notebooks
+
+`notebooks/laporan/` holds a second, parallel set of notebooks written in Indonesian. They
+**explain and verify**; they do not compute. Each one reads only the committed files in
+`results/`, shows the relevant code by reading the script as text, and re-derives every
+number the dissertation prints from that experiment — reporting `COCOK` / `TIDAK COCOK`
+per number rather than restating the conclusion.
+
+| Notebook | Covers |
+|---|---|
+| `00_peta_eksperimen.ipynb` | Master map: every experiment and audit → result files → dissertation tables → IJIES artefacts |
+| `exp07_replikasi_origin_seed.ipynb` | Four forecast origins and five seeds (Tables 5.7, 5.8) |
+| `exp08_stabilitas_pemodel_residual.ipynb` | Six residual-learner families (Table 5.9) |
+| `exp10_gangguan_terkontrol.ipynb` | Controlled noise and demand shocks (Tables 5.10–5.12) |
+| `exp11_tahap_pertama_kalender.ipynb` | Calendar-keyed first stage (Table 4.12) |
+| `exp12_pembanding_pharmasales.ipynb` | Rolling ARIMA, random forest, LSTM (Table 4.11) |
+| `exp13_lstm_grid_lebar.ipynb` | LSTM with a wider width grid (Table 4.11) |
+| `exp14_ets_pharmasales.ipynb` | Rolling ETS (Tables 4.11, 4.13) |
+| `audit_kebocoran_dan_inferensi.ipynb` | Leakage audits and dependence-aware inference (Tables 4.1, 4.6, 4.7, 4.9, 4.10) |
+
+**They never retrain anything.** No notebook imports `src/experiments` or `tools` — that
+would pull in TensorFlow — and none writes to `results/`, `data/` or `raw/`. Each carries a
+`RUN_EXPERIMENT = False` cell that, if set to `True`, only invokes the original
+`python tools/...` command. A SHA-256 snapshot of all 179 files in `results/` was taken
+before these notebooks were written and re-checked after: every hash is unchanged.
+
+Predictions that **failed** are reported as they stand. `exp10` re-derives P6–P9 from the
+CSVs and confirms that P6a and P9b fail; `exp14` does the same for P5a and P5b. One
+discrepancy surfaced and is **not** silently corrected: Table 5.12 row P8b prints `+0,33%`
+for the level-shift scenario where `exp10_summary_pharma.csv` gives `0,3250%`, which rounds
+to `0,32%`. It does not change any verdict, and `exp10_gangguan_terkontrol.ipynb` reports it
+in place.
+
+Two reproduction caveats the notebooks state rather than hide: the numbers in Tables 5.7 and
+5.8 are typed as literals in the manuscript source instead of being read from CSV, so
+`exp07_replikasi_origin_seed.ipynb` checks all 124 of them one by one; and `exp01`–`exp04`
+no longer reproduce their archived rows if run unchanged, for the reasons given in
+[REPRODUCE.md](REPRODUCE.md) §8.
+
 
 ## Reproduction
 
