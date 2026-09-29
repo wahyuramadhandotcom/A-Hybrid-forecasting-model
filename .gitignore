@@ -96,3 +96,7 @@ results/_exp0*_quick/
 
 # round-2 manuscript files (under review, not published)
 _revision_r2/
+
+# internal review note on the manuscript-build toolchain (arlrx_pipeline/),
+# which lives beside this repo and is itself ignored above
+REVIEW_*.md
