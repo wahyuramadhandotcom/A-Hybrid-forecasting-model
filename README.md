@@ -224,7 +224,7 @@ per number rather than restating the conclusion.
 |---|---|
 | `00_peta_eksperimen.ipynb` | Master map: every experiment and audit → result files → dissertation tables → IJIES artefacts |
 | `exp07_replikasi_origin_seed.ipynb` | Four forecast origins and five seeds (Tables 5.7, 5.8) |
-| `exp08_stabilitas_pemodel_residual.ipynb` | Six residual-learner families (Table 5.9) |
+| `exp08_stabilitas_jenis_model_residual.ipynb` | Six residual model types (Table 5.9) |
 | `exp10_gangguan_terkontrol.ipynb` | Controlled noise and demand shocks (Tables 5.10–5.12) |
 | `exp11_tahap_pertama_kalender.ipynb` | Calendar-keyed first stage (Table 4.12) |
 | `exp12_pembanding_pharmasales.ipynb` | Rolling ARIMA, random forest, LSTM (Table 4.11) |
