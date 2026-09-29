@@ -62,17 +62,23 @@ if the weaker pass is also in the repository.
 ## 3. The experimental contract
 
 Enforced by `src/experiments/protocol.py` and obeyed by every model, including the
-retrained baselines.
+retrained baselines. The numbering follows Table 3.3 of the dissertation (Section 3.5), so
+the code, the manuscript and this file use the same rule codes.
 
-| | Rule |
-|---|---|
-| C1 | Chronological 70/15/15 split; no observation from a later block precedes one from an earlier block |
-| C2 | Hyperparameters selected by minimising **validation** RMSE; the test block is never consulted during selection |
-| C3 | The selected configuration is refitted on training + validation before the test block is predicted once |
-| C4 | Seed 42 everywhere; tree-based results verified bit-identical across repeated runs on the same platform |
-| C5 | Autoregressive lag count chosen from the PACF of the **training block alone** |
-| C6 | Scalers, group means and every other fitted statistic estimated on the block currently being trained on |
-| C7 | Every experiment writes a result file with all metrics, selected hyperparameters, split boundaries and an environment stamp |
+| | Rule | Purpose |
+|---|---|---|
+| C1 | Chronological 70/15/15 split; for Rossmann the boundaries fall on date edges, so a single date is never split across blocks | No future information during training |
+| C2 | Hyperparameters selected by minimising **validation** RMSE; the test block is never consulted during selection | The test block does not influence selection |
+| C3 | The selected configuration is refitted on training + validation, then the test block is predicted exactly once | A sound final evaluation |
+| C4 | Seed 42 everywhere; tree-based results verified bit-identical across repeated runs on the same platform; seed sensitivity tested separately in `exp07` | Reproducibility |
+| C5 | Autoregressive lag count chosen from the PACF of the **training block alone** | Leak-free feature design |
+| C6 | Scalers, group means and every other fitted statistic estimated on the block currently being trained on | Leak-free statistics |
+| C7 | One forecasting task for every model: rolling one-step-ahead prediction; the features for date *t* use observations up to *t−1* only | Every model gets the same information |
+| C8 | Every experiment writes a result file with all metrics, selected hyperparameters, split boundaries, an environment stamp and the test predictions | Every number in the manuscript is traceable |
+
+C7 means the reported error is a one-day-ahead error for the daily series and a one-week-ahead
+error for the weekly series. Multi-period forecasting, which would feed predictions back in
+place of lags, is a different task and is out of scope.
 
 ## 4. Column glossary
 

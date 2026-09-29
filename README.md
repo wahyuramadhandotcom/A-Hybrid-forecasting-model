@@ -120,15 +120,18 @@ configuration because it matches the information a planner actually holds.
 
 ## The Experimental Contract
 
+Numbered as in Table 3.3 of the dissertation (Section 3.5).
+
 | | Rule |
 |---|---|
-| C1 | Chronological 70/15/15 split |
+| C1 | Chronological 70/15/15 split; for Rossmann the boundaries fall on date edges |
 | C2 | Hyperparameters selected on validation only |
 | C3 | Refit on training + validation, then one untouched evaluation on test |
 | C4 | Seed 42; tree-based results verified bit-identical across runs on the same platform |
 | C5 | Lag count chosen from the PACF of the training block alone |
 | C6 | Every fitted statistic estimated on the active fitting block |
-| C7 | Every experiment writes metrics, hyperparameters, split boundaries and an environment stamp |
+| C7 | Rolling one-step-ahead prediction for every model; features for date *t* use observations up to *t−1* only |
+| C8 | Every experiment writes metrics, hyperparameters, split boundaries, an environment stamp and the test predictions |
 
 ## Key Results Summary
 
