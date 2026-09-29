@@ -19,7 +19,7 @@ C2  Tuning.  Hyperparameter DIPILIH HANYA dari RMSE pada validation split. Tidak
 
 C3  Refit dan evaluasi akhir.  Konfigurasi terbaik dari validation di-refit pada
     train+val, lalu test split diprediksi TEPAT SATU KALI oleh model final.
-    Tujuan: evaluasi akhir yang jujur.
+    Tujuan: evaluasi akhir yang sahih.
 
 C4  Determinisme.  Satu SEED global (42) dipasang ke Python `random`, NumPy, dan
     PYTHONHASHSEED; setiap estimator stokastik (XGBoost, KMeans) menerima
