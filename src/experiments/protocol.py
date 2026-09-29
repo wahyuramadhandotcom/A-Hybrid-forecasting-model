@@ -3,39 +3,55 @@ Unified experimental protocol for
 "Evaluating the Empirical Robustness of a Residual-Based Linear Regression-XGBoost
 Framework in Pharmaceutical and Retail Demand Forecasting".
 
-Design contract (satu-satunya sumber kebenaran untuk SEMUA notebook eksperimen):
+Design contract (satu-satunya sumber kebenaran untuk SEMUA notebook eksperimen).
 
-C1  Determinism.  Satu SEED global (42) dipasang ke Python `random`, NumPy, dan
+Penomoran C1-C8 di bawah ini mengikuti Tabel 3.3 disertasi (Subbab 3.5, draf v3_6),
+sehingga kode dan naskah memakai kode aturan yang sama.
+
+C1  Pembagian data.  Kronologis, tanpa shuffle, rasio identik untuk semua model dan
+    semua set fitur: 70% train / 15% validation / 15% test (SPLIT_RATIOS). Untuk
+    Rossmann batas ditentukan per tanggal, sehingga satu tanggal tidak terbelah.
+    Tujuan: tidak ada informasi masa depan dalam pelatihan.
+
+C2  Tuning.  Hyperparameter DIPILIH HANYA dari RMSE pada validation split. Tidak ada
+    GridSearchCV yang di-fit pada test, dan tidak ada seleksi berbasis test.
+    Tujuan: data uji tidak memengaruhi seleksi.
+
+C3  Refit dan evaluasi akhir.  Konfigurasi terbaik dari validation di-refit pada
+    train+val, lalu test split diprediksi TEPAT SATU KALI oleh model final.
+    Tujuan: evaluasi akhir yang sahih.
+
+C4  Determinisme.  Satu SEED global (42) dipasang ke Python `random`, NumPy, dan
     PYTHONHASHSEED; setiap estimator stokastik (XGBoost, KMeans) menerima
     random_state=SEED secara eksplisit. Tidak ada estimator yang dibuat tanpa seed.
+    Kepekaan terhadap seed diuji terpisah (exp07). Tujuan: reproduksibilitas.
 
-C2  Split.  Kronologis, tanpa shuffle, rasio identik untuk semua model dan semua
-    set fitur: 70% train / 15% validation / 15% test (SPLIT_RATIOS).
+C5  Pemilihan lag.  Jumlah lag (argmax PACF) dihitung HANYA pada blok training,
+    yaitu 70% pertama deret mentah, bukan pada deret penuh. Ini memperbaiki
+    kebocoran halus pada notebook lama yang menghitung ACF/PACF pada seluruh deret
+    termasuk test. Tujuan: desain fitur bebas kebocoran.
 
-C3  Tuning.  Hyperparameter DIPILIH HANYA dari performa pada validation split.
-    Test split disentuh tepat satu kali, oleh model final. Model final di-refit
-    pada train+val memakai konfigurasi terbaik dari validation.
-    Tidak ada GridSearchCV yang di-fit pada test, tidak ada seleksi berbasis test.
+C6  Statistik bebas kebocoran.  Scaler, rata-rata kelompok, dan statistik lain
+    di-fit ulang pada blok yang sedang dilatih saja (train untuk fase tuning,
+    train+val untuk fase refit) lalu ditransform ke blok evaluasi. Tidak pernah
+    di-fit pada test.
 
-C4  Fitur.  Set fitur adalah FAKTOR EKSPERIMEN, bukan properti model.
+C7  Tugas prediksi.  Satu tugas prediksi untuk semua model: prediksi bergulir satu
+    langkah ke depan. Fitur untuk tanggal t hanya memakai observasi sampai t-1.
+    Prediksi multi-periode adalah tugas berbeda dan tidak dicakup protokol ini.
+    Tujuan: semua model mendapat informasi yang sama.
+
+C8  Pelaporan. Setiap baris hasil menyimpan: dataset, granularitas, kategori,
+    set fitur, nama model, hyperparameter terpilih, metrik validation, metrik
+    test, jumlah fitur, ukuran split, seed, dan waktu jalan. Ditulis sebagai
+    CSV + JSON machine-readable ke results/, bersama stempel lingkungan dan
+    prediksi uji. Tujuan: setiap angka naskah dapat dilacak.
+
+Catatan di luar Tabel 3.3: set fitur adalah FAKTOR EKSPERIMEN, bukan properti model.
       - FEATURE_SET_A ("lag1")  : [lag_1]                      -> protokol referensi
       - FEATURE_SET_B ("rich")  : [lag_1..lag_k, rolling_mean_k] -> protokol usulan
     k dipilih dari PACF yang dihitung HANYA pada blok training (lihat C5).
     Setiap model dijalankan pada kedua set fitur.
-
-C5  Tidak ada informasi masa depan dalam desain fitur. Pemilihan lag (argmax PACF)
-    dihitung pada 70% pertama deret mentah, bukan pada deret penuh. Ini
-    memperbaiki kebocoran halus pada notebook lama yang menghitung ACF/PACF pada
-    seluruh deret termasuk test.
-
-C6  Penskalaan. Scaler apa pun di-fit ulang pada blok training aktif saja
-    (train untuk fase tuning, train+val untuk fase refit) lalu ditransform ke
-    blok evaluasi. Tidak pernah di-fit pada test.
-
-C7  Pelaporan. Setiap baris hasil menyimpan: dataset, granularitas, kategori,
-    set fitur, nama model, hyperparameter terpilih, metrik validation, metrik
-    test, jumlah fitur, ukuran split, seed, dan waktu jalan. Ditulis sebagai
-    CSV + JSON machine-readable ke results/.
 """
 
 from __future__ import annotations
@@ -54,7 +70,7 @@ import numpy as np
 import pandas as pd
 
 # --------------------------------------------------------------------------- #
-# C1 - determinism
+# C4 - determinisme
 # --------------------------------------------------------------------------- #
 
 SEED = 42
@@ -68,7 +84,7 @@ def set_global_seed(seed: int = SEED) -> None:
 
 
 # --------------------------------------------------------------------------- #
-# C2 - split
+# C1 - pembagian data
 # --------------------------------------------------------------------------- #
 
 SPLIT_RATIOS = (0.70, 0.15, 0.15)
@@ -243,7 +259,7 @@ def select_lag_from_train(series, ratios=SPLIT_RATIOS, nlags=26) -> int:
 
 
 # --------------------------------------------------------------------------- #
-# C4 - dataset builder (PharmaSales)
+# Dataset builder (PharmaSales) - set fitur sebagai faktor eksperimen
 # --------------------------------------------------------------------------- #
 
 FEATURE_SET_A = "A_lag1"     # protokol referensi (Rathipriya et al.)
@@ -376,7 +392,7 @@ def build_pharma_dataset(df: pd.DataFrame,
 
 
 # --------------------------------------------------------------------------- #
-# C3/C6 - runner: tuning di validation, refit di train+val, test sekali
+# C2/C3/C6 - runner: tuning di validation, refit di train+val, test sekali
 # --------------------------------------------------------------------------- #
 
 def param_grid_list(grid: Dict[str, Sequence]) -> List[Dict]:
@@ -410,7 +426,7 @@ def run_model(model_name: str,
               clip_nonnegative: bool = True,
               inverse_transform: Optional[Callable] = None,
               extra: Optional[Dict] = None) -> Dict:
-    """Jalankan satu model mengikuti kontrak C3/C6 dan kembalikan satu baris hasil.
+    """Jalankan satu model mengikuti kontrak C2, C3 dan C6, lalu kembalikan satu baris hasil.
 
     fit_predict(X_fit, y_fit, X_eval, params) -> prediksi untuk X_eval.
     """
@@ -538,7 +554,7 @@ def fp_rbfnn(X_fit, y_fit, X_eval, params):
 
 def make_xgb(params: Dict):
     """Konstruktor TUNGGAL untuk XGBRegressor. Semua notebook wajib lewat sini,
-    sehingga random_state / n_jobs / objective tidak mungkin lupa dipasang (C1)."""
+    sehingga random_state / n_jobs / objective tidak mungkin lupa dipasang (C4)."""
     from xgboost import XGBRegressor
 
     defaults = dict(
@@ -713,7 +729,7 @@ GRID_XGB_ROSSMANN = {
 
 
 # --------------------------------------------------------------------------- #
-# C7 - penulisan hasil
+# C8 - penulisan hasil
 # --------------------------------------------------------------------------- #
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"

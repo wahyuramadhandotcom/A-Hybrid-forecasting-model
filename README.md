@@ -120,15 +120,18 @@ configuration because it matches the information a planner actually holds.
 
 ## The Experimental Contract
 
+Numbered as in Table 3.3 of the dissertation (Section 3.5).
+
 | | Rule |
 |---|---|
-| C1 | Chronological 70/15/15 split |
+| C1 | Chronological 70/15/15 split; for Rossmann the boundaries fall on date edges |
 | C2 | Hyperparameters selected on validation only |
 | C3 | Refit on training + validation, then one untouched evaluation on test |
 | C4 | Seed 42; tree-based results verified bit-identical across runs on the same platform |
 | C5 | Lag count chosen from the PACF of the training block alone |
 | C6 | Every fitted statistic estimated on the active fitting block |
-| C7 | Every experiment writes metrics, hyperparameters, split boundaries and an environment stamp |
+| C7 | Rolling one-step-ahead prediction for every model; features for date *t* use observations up to *t−1* only |
+| C8 | Every experiment writes metrics, hyperparameters, split boundaries, an environment stamp and the test predictions |
 
 ## Key Results Summary
 
@@ -221,7 +224,7 @@ per number rather than restating the conclusion.
 |---|---|
 | `00_peta_eksperimen.ipynb` | Master map: every experiment and audit → result files → dissertation tables → IJIES artefacts |
 | `exp07_replikasi_origin_seed.ipynb` | Four forecast origins and five seeds (Tables 5.7, 5.8) |
-| `exp08_stabilitas_pemodel_residual.ipynb` | Six residual-learner families (Table 5.9) |
+| `exp08_stabilitas_jenis_model_residual.ipynb` | Six residual model types (Table 5.9) |
 | `exp10_gangguan_terkontrol.ipynb` | Controlled noise and demand shocks (Tables 5.10–5.12) |
 | `exp11_tahap_pertama_kalender.ipynb` | Calendar-keyed first stage (Table 4.12) |
 | `exp12_pembanding_pharmasales.ipynb` | Rolling ARIMA, random forest, LSTM (Table 4.11) |
